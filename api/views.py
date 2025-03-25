@@ -50,13 +50,16 @@ def get_trip_details(request: HttpRequest, trip_id: int) -> Response:
         trip: Trip = Trip.objects.get(id=trip_id)
         trip_serializer: TripSerializer = TripSerializer(trip)
         route_serializer: RouteSerializer = RouteSerializer(trip.route)
+
+        # ✅ Ensure logs are retrieved correctly
         logs = DriverLog.objects.filter(trip=trip)
         log_serializer: DriverLogSerializer = DriverLogSerializer(logs, many=True)
 
         return Response({
             "trip": trip_serializer.data,
             "route": route_serializer.data,
-            "logs": log_serializer.data
+            "logs": log_serializer.data if logs.exists() else [],
+            "message": "No driver logs found for this trip." if not logs.exists() else None
         })
     except Trip.DoesNotExist:
         return Response({"error": "Trip not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -104,16 +107,14 @@ def generate_eld_logs(request: HttpRequest, trip_id: int) -> Response:
         trip: Trip = Trip.objects.get(id=trip_id)
         logs = DriverLog.objects.filter(trip=trip)
 
-        log_data = []
-        for log in logs:
-            log_data.append({
-                "date": log.date,
-                "off_duty_hours": log.off_duty_hours,
-                "sleeper_berth_hours": log.sleeper_berth_hours,
-                "driving_hours": log.driving_hours,
-                "on_duty_hours": log.on_duty_hours,
-                "remarks": log.remarks
-            })
+        log_data = [{
+            "date": log.date,
+            "off_duty_hours": log.off_duty_hours,
+            "sleeper_berth_hours": log.sleeper_berth_hours,
+            "driving_hours": log.driving_hours,
+            "on_duty_hours": log.on_duty_hours,
+            "remarks": log.remarks
+        } for log in logs]
 
         return Response({"logs": log_data}, status=status.HTTP_200_OK)
     except Trip.DoesNotExist:
@@ -129,91 +130,71 @@ def calculate_route(start: str, end: str) -> Optional[Dict[str, Any]]:
         raise ValueError("Missing API Key! Set OPENROUTESERVICE_API_KEY in environment variables.")
 
     BASE_URL: str = "https://api.openrouteservice.org/v2/directions/driving-car"
-    GEOCODE_URL: str = "https://api.openrouteservice.org/geocode/search"
 
-    def get_coordinates(location: str) -> Optional[Dict[str, float]]:
-        params: Dict[str, str] = {
-            "api_key": API_KEY,
-            "text": location
-        }
-        try:
-            response: requests.Response = requests.get(GEOCODE_URL, params=params)
-            if response.status_code == 200:
-                data: Dict[str, Any] = response.json()
-                if data["features"]:
-                    coordinates = data["features"][0]["geometry"]["coordinates"]
-                    return {"longitude": coordinates[0], "latitude": coordinates[1]}
-        except requests.RequestException:
-            pass
-        return None
-
-    start_coords = get_coordinates(start)
-    end_coords = get_coordinates(end)
-
-    if not start_coords or not end_coords:
-        return None
-
-    params: Dict[str, str] = {
+    params = {
         "api_key": API_KEY,
-        "start": f"{start_coords['longitude']},{start_coords['latitude']}",
-        "end": f"{end_coords['longitude']},{end_coords['latitude']}"
+        "start": start,
+        "end": end
     }
 
     try:
-        response: requests.Response = requests.get(BASE_URL, params=params)
+        response = requests.get(BASE_URL, params=params)
         if response.status_code == 200:
-            data: Dict[str, Any] = response.json()
-            if "features" in data and data["features"]:
-                route = data["features"][0]
-                # Add 1 hour for pickup and 1 hour for drop-off (7200 seconds)
-                total_duration = route["properties"]["segments"][0]["duration"] + (2 * 3600)
-
-                return {
-                    "duration": total_duration,
-                    "fuel_stops": get_fuel_stops(route),
-                    "rest_stops": get_rest_stops(route),
-                    "route_path": route["geometry"]
-                }
+            data = response.json()
+            return {
+                "duration": data["routes"][0]["summary"]["duration"],
+                "fuel_stops": get_fuel_stops(data),
+                "rest_stops": get_rest_stops(data),
+                "route_path": data["routes"][0]["geometry"]
+            }
     except requests.RequestException:
         pass
 
     return None
 
 def get_fuel_stops(route_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-    total_distance = route_data["properties"]["segments"][0]["distance"]  # Distance in meters
+    total_distance = route_data["routes"][0]["summary"]["distance"]
     fuel_stops = []
-    miles_per_stop = 1000  # Fuel stop every 1000 miles
+    miles_per_stop = 1000  
     meters_per_mile = 1609.34
 
-    # Ensure at least one fuel stop if distance exceeds threshold
     num_stops = max(1, int(total_distance // (miles_per_stop * meters_per_mile)))
 
-    # Loop through and determine fuel stop positions along the route
+    coordinates = route_data["routes"][0]["geometry"]["coordinates"]
+    step_size = max(1, len(coordinates) // num_stops)
+
     for i in range(num_stops):
+        index = min(i * step_size, len(coordinates) - 1)
+        lon, lat = coordinates[index]
+
         fuel_stops.append({
             "location": f"Fuel Stop {i+1}",
-            "latitude": route_data["geometry"]["coordinates"][i][1],
-            "longitude": route_data["geometry"]["coordinates"][i][0],
+            "latitude": lat,
+            "longitude": lon,
             "mile_marker": round((i + 1) * miles_per_stop, 2)
         })
 
     return fuel_stops
 
 def get_rest_stops(route_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-    total_duration = route_data["properties"]["segments"][0]["duration"]  # Duration in seconds
+    total_duration = route_data["routes"][0]["summary"]["duration"]
     rest_stops = []
-    hours_per_stop = 8  # Rest stop every 8 driving hours
+    hours_per_stop = 8  
     seconds_per_hour = 3600
 
-    # Ensure at least one rest stop if duration exceeds threshold
     num_stops = max(1, int(total_duration // (hours_per_stop * seconds_per_hour)))
 
-    # Loop through and determine rest stop positions
+    coordinates = route_data["routes"][0]["geometry"]["coordinates"]
+    step_size = max(1, len(coordinates) // num_stops)
+
     for i in range(num_stops):
+        index = min(i * step_size, len(coordinates) - 1)
+        lon, lat = coordinates[index]
+
         rest_stops.append({
             "location": f"Rest Stop {i+1}",
-            "latitude": route_data["geometry"]["coordinates"][i][1],
-            "longitude": route_data["geometry"]["coordinates"][i][0],
+            "latitude": lat,
+            "longitude": lon,
             "hour_marker": (i + 1) * hours_per_stop
         })
 
