@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
 import AppContext from "./AppContextProvider";
 
-const AppProvider = ({ children }) => {
-  const [data, setData] = useState({
-    settings: {
-      isDarkMode: false,
-      isDrawerOpen: false,
-    },
-  });
-
-  useEffect(() => {
+const AppProvider = ({ children, navigateTo, pathname }) => {
+  const [data, setData] = useState(() => {
     const storedData = JSON.parse(localStorage.getItem("appData"));
-    if (storedData) {
-      setData(storedData);
-    }
-  }, []);
+    return (
+      storedData || {
+        settings: {
+          isDarkMode: false,
+        },
+      }
+    );
+  });
 
   useEffect(() => {
     localStorage.setItem("appData", JSON.stringify(data));
@@ -30,19 +27,9 @@ const AppProvider = ({ children }) => {
     }));
   };
 
-  const handleDrawerChange = () => {
-    setData((prevData) => ({
-      ...prevData,
-      settings: {
-        ...prevData.settings,
-        isDrawerOpen: !prevData.settings.isDrawerOpen,
-      },
-    }));
-  };
-
   return (
     <AppContext.Provider
-      value={{ data, handleThemeChange, handleDrawerChange }}
+      value={{ data, handleThemeChange, navigateTo, pathname }}
     >
       {children}
     </AppContext.Provider>

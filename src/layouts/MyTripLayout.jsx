@@ -1,13 +1,11 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import { PageHeader, PageContainer } from "@toolpad/core/PageContainer";
+import Container from "@mui/material/Container";
 
-const MyTripLayout = () => {
+const MyTripLayout = ({ pathname}) => {
   return (
-    <PageContainer>
-      <PageHeader />
-      <Outlet />
-    </PageContainer>
+     <Container sx={{ my: 2 }}>
+      <h1> { pathname} </h1>
+    </Container>
   );
 };
 
