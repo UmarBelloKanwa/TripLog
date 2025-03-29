@@ -55,7 +55,7 @@ const DashedEditable = ({
   };
 
   return (
-    <div
+    <span
       id={name}
       ref={divRef}
       contentEditable
@@ -75,7 +75,7 @@ const DashedEditable = ({
       }}
     >
       {value || placeholder}
-    </div>
+    </span>
   );
 };
 

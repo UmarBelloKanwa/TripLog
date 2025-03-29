@@ -9,24 +9,34 @@ import AppContext from "../contexts/AppContextProvider";
 
 export default function SpeedDial() {
   const { navigateTo } = React.useContext(AppContext);
-
+  const navigate = (r, p) => navigateTo(r, p, false);
   const actions = [
     {
       icon: <FormatAlignLeftIcon />,
       name: "Use form",
-      onClick: () => navigateTo("/create-trip", "form"),
+      onClick: () => navigate("/create-trip", "form"),
     },
     {
       icon: <EditIcon />,
-      name: "Use text",
-      onClick: () => navigateTo("/create-trip", "text"),
+      name: "Use card",
+      onClick: () => navigate("/create-trip", "card"),
     },
   ];
   return (
     <Box sx={{ flexGrow: 1 }}>
       <SpeedDl
         ariaLabel="SpeedDial basic example"
-        sx={{ position: "absolute", bottom: 55, right: 51 }}
+        sx={{
+          position: "absolute",
+          bottom: {
+            xs: 42,
+            sm: 55,
+          },
+          right: {
+            xs: 23,
+            sm: 51,
+          },
+        }}
         icon={<SpeedDialIcon />}
       >
         {actions.map((action) => (

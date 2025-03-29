@@ -19,6 +19,7 @@ import CalendarViewWeekIcon from "@mui/icons-material/CalendarViewWeek";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import { Title } from "./components/TextField";
 import theme from "./theme";
+import { useLocation } from "react-router-dom";
 
 const useIsMobile = () => {
   const theme = useTheme();
@@ -29,14 +30,18 @@ export default function App() {
   const navigate = useNavigate();
   const router = useDemoRouter("/");
   const isMobile = useIsMobile();
+  const location = useLocation();
 
-  const navigateTo = (path, r = null) => {
-    navigate(path);
-    router.navigate(path);
-    if (r !== null) {
-      router.navigate(r);
+
+  const navigateTo = (route, path = null, isFromMenu = true) => {
+    if (route != location.pathname) {
+      navigate(route);
+      router.navigate(route);
     }
-    if (isMobile) {
+    if (path !== null && path != router.pathname) {
+      router.navigate(path);
+    }
+    if (isMobile && isFromMenu) {
       document.querySelector("header .MuiButtonBase-root")?.click();
     }
   };
@@ -45,7 +50,7 @@ export default function App() {
     <ReactRouterAppProvider
       branding={{
         logo: <LocalShippingIcon />,
-        title: "TripLog",
+        title: "Triplog",
         homeUrl: "/",
       }}
       navigation={[
@@ -63,27 +68,27 @@ export default function App() {
           children: [
             { kind: "header", title: "Via" },
             { segment: "form", title: "Form", icon: <FormatAlignLeftIcon /> },
-            { segment: "text", title: "Text", icon: <CreateIcon /> },
+            { segment: "card", title: "Card", icon: <CreateIcon /> },
           ],
         },
         { kind: "divider" },
         { kind: "header", title: "View" },
         {
-          segment: "my-trip",
+          segment: "my-trips",
           title: (
             <Title
-              value="My trip"
+              value="My trips"
               Icon={ViewTimelineIcon}
-              onClick={() => navigateTo("/my-trip")}
+              onClick={() => navigateTo("/my-trips")}
             />
           ),
           icon: <></>,
           children: [
             { kind: "header", title: "See" },
-            { segment: "map", title: "Map", icon: <MapIcon /> },
+            { segment: "last-created", title: "Last created", icon: <MapIcon /> },
             {
-              segment: "eld-log",
-              title: "ELD Log",
+              segment: "all-trips",
+              title: "All trips",
               icon: <CalendarViewWeekIcon />,
             },
           ],
@@ -93,7 +98,7 @@ export default function App() {
       router={router}
       theme={theme}
     >
-      <AppProvider navigateTo={navigateTo} pathname={router.pathname}>
+      <AppProvider navigateTo={navigateTo} route={location.pathname} pathname={router.pathname}>
         <DashboardLayout
           disableCollapsibleSidebar
           slots={{

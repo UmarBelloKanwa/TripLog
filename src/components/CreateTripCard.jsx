@@ -141,7 +141,7 @@ function ColorlibStepIcon(props) {
   );
 }
 
-export default function CreateTripText() {
+export default function CreateTripCard() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
@@ -173,8 +173,8 @@ export default function CreateTripText() {
     year: "numeric",
   }).format(new Date());
 
-    const handleNext = () => {
-      const newActiveStep =
+  const handleNext = () => {
+    const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed,
           // find the first step that has been completed
@@ -205,88 +205,85 @@ export default function CreateTripText() {
   };
 
   return (
-      <Box sx={{ width: "75%", margin: "0 auto" }}>
-        <div>
-          {allStepsCompleted() ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Card>
-                  <CardHeader
-                    avatar={<Avatar aria-label="recipe" />}
-                    action={
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
+    <Box sx={{ textAlign: "left" }}>
+      <div>
+        {allStepsCompleted() ? (
+          <React.Fragment>
+            <Typography sx={{ mt: 2, mb: 1 }}>
+              All steps completed - you&apos;re finished
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button onClick={handleReset}>Reset</Button>
+            </Box>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Card>
+                <CardHeader
+                  avatar={<Avatar aria-label="recipe" />}
+                  action={
+                    <IconButton aria-label="share">
+                      <ShareIcon />
+                    </IconButton>
+                  }
+                  title="Truck Driver"
+                  subheader={currentDate}
+                />
+                <CardMedia
+                  component="img"
+                  height="194"
+                  image="/images/eveningTruck.jpg"
+                  alt="Truck image"
+                />
+                <Stepper
+                  alternativeLabel
+                  activeStep={activeStep}
+                  connector={<ColorlibConnector />}
+                  sx={{ width: "90%", margin: "1em auto auto auto" }}
+                >
+                  {steps.map((label, index) => (
+                    <Step key={label} completed={completed[index]}>
+                      <StepLabel
+                        StepIconComponent={ColorlibStepIcon}
+                        color="inherit"
+                        onClick={handleStep(index)}
+                      >
+                        {label}
+                      </StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    About the trip
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    Currently, I am at <DashedInput name="location" /> ,
+                    preparing to pick up goods from{" "}
+                    {
+                      "                                                                                                                                      "
                     }
-                    title="Truck Driver"
-                    subheader={currentDate}
-                  />
-                  <CardMedia
-                    component="img"
-                    height="194"
-                    image="/eveningTruck.jpg"
-                    alt="Truck image"
-                  />
-                  <Stepper
-                    alternativeLabel
-                    activeStep={activeStep}
-                    connector={<ColorlibConnector />}
-                    sx={{ width: "90%", margin: "1em auto auto auto" }}
-                  >
-                    {steps.map((label, index) => (
-                      <Step key={label} completed={completed[index]}>
-                        <StepLabel
-                          StepIconComponent={ColorlibStepIcon}
-                          color="inherit"
-                          onClick={handleStep(index)}
-                        >
-                          {label}
-                        </StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      About the trip
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "text.secondary" }}
-                    >
-                      Currently, I am at <DashedInput name="location" /> ,
-                      preparing to pick up goods from{" "}
-                      {
-                        "                                                                                                                                      "
-                      }
-                      <DashedInput name="pickup" /> and deliver them to{" "}
-                      <DashedInput name="destination" />. The journey is
-                      expected to take approximately{" "}
-                      <DashedInput type="number" name="hours" width="50px" />{" "}
-                      hours, ensuring safe and timely transportation while
-                      maintaining efficiency on the route.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" color="primary">
-                      Create
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Box>
-            </React.Fragment>
-          )}
-        </div>
-      </Box>
+                    <DashedInput name="pickup" /> and deliver them to{" "}
+                    <DashedInput name="destination" />. The journey is expected
+                    to take approximately{" "}
+                    <DashedInput type="number" name="hours" width="50px" />{" "}
+                    hours, ensuring safe and timely transportation while
+                    maintaining efficiency on the route.
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button size="small" color="primary">
+                    Create
+                  </Button>
+                </CardActions>
+              </Card>
+            </Box>
+          </React.Fragment>
+        )}
+      </div>
+    </Box>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AppContext from "./AppContextProvider";
 
-const AppProvider = ({ children, navigateTo, pathname }) => {
+const AppProvider = ({ children, navigateTo, route, pathname }) => {
   const [data, setData] = useState(() => {
     const storedData = JSON.parse(localStorage.getItem("appData"));
     return (
@@ -29,7 +29,7 @@ const AppProvider = ({ children, navigateTo, pathname }) => {
 
   return (
     <AppContext.Provider
-      value={{ data, handleThemeChange, navigateTo, pathname }}
+      value={{ data, handleThemeChange, navigateTo, route, pathname }}
     >
       {children}
     </AppContext.Provider>

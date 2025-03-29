@@ -18,8 +18,8 @@ const theme = createTheme({
           paper: "rgb(241, 237, 255)",
         },
         text: {
-          primary: "rgb(1, 1, 1)",
-          secondary: "#7B6CF2",
+          primary: "rgb(6, 41, 79)",
+          secondary: "rgb(32, 10, 193)",
         },
       },
     },
@@ -70,13 +70,38 @@ const theme = createTheme({
         }),
       },
     },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          background:
+            "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+          border: 0,
+          borderRadius: "14px",
+          color: "white",
+          "&:hover": {
+            background:
+              "linear-gradient(45deg,rgb(66, 57, 226) 30%,rgb(11, 60, 61) 90%)", // Lighter green gradient on hover
+          },
+        },
+      },
+    },
+
     MuiButton: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          color: theme.palette.primary.contrastText,
-          border: `2px solid ${theme.palette.primary.light}`, // Adds border to buttons
-          borderRadius: "12px", // Optional for rounded buttons
-        }),
+        root: {
+          background:
+            "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+          border: 0,
+          borderRadius: "14px",
+          boxShadow: "0 3px 5px 2px rgba(80, 141, 78, 0.3)", // Green shadow effect
+          color: "white",
+          height: 48,
+          padding: "0 30px",
+          "&:hover": {
+            background:
+              "linear-gradient(45deg,rgb(66, 57, 226) 30%,rgb(11, 60, 61) 90%)", // Lighter green gradient on hover
+          },
+        },
       },
     },
   },
