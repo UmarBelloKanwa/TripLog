@@ -138,9 +138,15 @@ export default function Home() {
         sx={(theme) => ({
           margin: "auto",
           mt: 2,
-          fontSize: "large",
+          fontSize: {
+            xs: "normal",
+            sm: "large",
+          },
           textAlign: "center",
-          fontWeight: "bold",
+          fontWeight: {
+            xs: "400",
+            sm: "bold",
+          },
           backgroundImage:
             "linear-gradient(45deg,rgb(4, 13, 60) 30%,rgb(175, 87, 87) 90%,rgb(18, 48, 40))",
           backgroundClip: "text",
@@ -152,7 +158,7 @@ export default function Home() {
           }),
         })}
       >
-        Planning a trip has never been easier! <strong>TripLog</strong> is your
+        Planning a trip has never been easier! <strong>Triplog</strong> is your
         ultimate trip tracking and logging solution, designed for professional
         truck drivers and logistics teams. Enter your trip details, and let
         Triplog handle the rest—generating optimized routes, tracking stops and
@@ -211,7 +217,11 @@ export default function Home() {
         )}
       </Box>
       <Divider sx={{ mt: 1, mb: 1 }}>
-        <Chip label="What we offered ?" variant="contained" />
+        <Chip
+          label="What we offered ?"
+          variant="contained"
+          sx={{ borderRadius: 1, width: "100%" }}
+        />
       </Divider>
       <Box
         sx={{
@@ -323,7 +333,7 @@ export default function Home() {
           }}
         >
           Whether you're a long-haul trucker or a logistics company,{" "}
-          <strong>TripLog</strong> keeps your trips organized, compliant, and
+          <strong>Triplog</strong> keeps your trips organized, compliant, and
           stress-free!
         </Typography>
         <br />
@@ -331,6 +341,7 @@ export default function Home() {
           <Chip
             label="Get started by clicking over + icon"
             variant="outlined"
+            sx={{ borderRadius: 1 }}
           />
         </Divider>
       </Box>

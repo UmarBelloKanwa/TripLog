@@ -1,5 +1,4 @@
 import * as React from "react";
-import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -7,21 +6,14 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import DashedInput from "./DashedInput";
-
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
@@ -30,37 +22,8 @@ import StepLabel from "@mui/material/StepLabel";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
-
-const steps = [
-  "Set current location",
-  "Set pickup loaction",
-  "Set dropoff location",
-  "set hours to spent",
-];
-
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme }) => ({
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-  variants: [
-    {
-      props: ({ expand }) => !expand,
-      style: {
-        transform: "rotate(0deg)",
-      },
-    },
-    {
-      props: ({ expand }) => !!expand,
-      style: {
-        transform: "rotate(180deg)",
-      },
-    },
-  ],
-}));
+import UseCreateTripCard from "../hooks/UseCreateTripCard";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -141,112 +104,99 @@ function ColorlibStepIcon(props) {
   );
 }
 
-export default function CreateTripCard() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
+export default function CreateTripCard({ data }) {
+  const {
+    formData,
+    handleSetFormData,
+    submitData,
+    steps,
+    currentDate,
+    activeStep,
+    completed,
+    handleStep,
+    isStepFailed,
+    helperTexts, // Add helperTexts here
+    loading, // Use loading state
+  } = UseCreateTripCard(data); // Pass `data` to the hook
 
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
-  const currentDate = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date());
-
-  const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleComplete = () => {
-    setCompleted({
-      ...completed,
-      [activeStep]: true,
-    });
-    handleNext();
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
+  const isButtonDisabled =
+    !Object.keys(completed).length ||
+    Object.values(helperTexts).some((text) => text) || // Use helperTexts here
+    loading;
+  // Disable button if no steps are completed, any helper text exists, or loading is true
 
   return (
-    <Box sx={{ textAlign: "left" }}>
+    <Box
+      sx={{
+        textAlign: "left",
+        width: {
+          xs: "100%",
+          sm: "83%",
+        },
+        m: "auto",
+      }}
+    >
       <div>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Card>
-                <CardHeader
-                  avatar={<Avatar aria-label="recipe" />}
-                  action={
-                    <IconButton aria-label="share">
-                      <ShareIcon />
-                    </IconButton>
+        <React.Fragment>
+          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+            <Box sx={{ flex: "1 1 auto" }} />
+            <Card sx={{ borderRadius: 5 }}>
+              <CardHeader
+                avatar={
+                  <Avatar aria-label="recipe">
+                    <Box
+                      component="img"
+                      src="/images/truck.jpg"
+                      alt="Triplog Logo"
+                      sx={{
+                        width: {
+                          xs: 70,
+                          sm: 100,
+                        },
+                        height: {
+                          xs: 50,
+                          sm: 63,
+                        },
+                      }}
+                    />
+                  </Avatar>
+                }
+                action={
+                  <IconButton aria-label="share">
+                    <ShareIcon />
+                  </IconButton>
+                }
+                title="Truck Driver"
+                subheader={currentDate}
+              />
+              <CardMedia
+                component="img"
+                height="194"
+                image="/images/eveningTruck.jpg"
+                alt="Truck image"
+              />
+              <Stepper
+                alternativeLabel
+                activeStep={activeStep}
+                connector={<ColorlibConnector />}
+                sx={{ width: "90%", margin: "1em auto auto auto" }}
+              >
+                {steps.map((label, index) => {
+                  const labelProps = {};
+                  const helperText = isStepFailed(index);
+                  if (helperText) {
+                    labelProps.optional = (
+                      <Typography variant="caption" color="error">
+                        {helperText}
+                      </Typography>
+                    );
+
+                    labelProps.error = true;
                   }
-                  title="Truck Driver"
-                  subheader={currentDate}
-                />
-                <CardMedia
-                  component="img"
-                  height="194"
-                  image="/images/eveningTruck.jpg"
-                  alt="Truck image"
-                />
-                <Stepper
-                  alternativeLabel
-                  activeStep={activeStep}
-                  connector={<ColorlibConnector />}
-                  sx={{ width: "90%", margin: "1em auto auto auto" }}
-                >
-                  {steps.map((label, index) => (
+                  return (
                     <Step key={label} completed={completed[index]}>
                       <StepLabel
+                        {...labelProps}
                         StepIconComponent={ColorlibStepIcon}
                         color="inherit"
                         onClick={handleStep(index)}
@@ -254,35 +204,63 @@ export default function CreateTripCard() {
                         {label}
                       </StepLabel>
                     </Step>
-                  ))}
-                </Stepper>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    About the trip
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    Currently, I am at <DashedInput name="location" /> ,
-                    preparing to pick up goods from{" "}
-                    {
-                      "                                                                                                                                      "
-                    }
-                    <DashedInput name="pickup" /> and deliver them to{" "}
-                    <DashedInput name="destination" />. The journey is expected
-                    to take approximately{" "}
-                    <DashedInput type="number" name="hours" width="50px" />{" "}
-                    hours, ensuring safe and timely transportation while
-                    maintaining efficiency on the route.
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small" color="primary">
-                    Create
-                  </Button>
-                </CardActions>
-              </Card>
-            </Box>
-          </React.Fragment>
-        )}
+                  );
+                })}
+              </Stepper>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  About the trip
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  Currently, I am at{" "}
+                  <DashedInput
+                    value={formData["current-location"]} // Prioritize form data
+                    name="current-location"
+                    onChange={(e) => handleSetFormData(e)}
+                  />{" "}
+                  , preparing to pick up goods from{" "}
+                  <DashedInput
+                    value={formData["pickup-location"]} // Prioritize form data
+                    name="pickup-location"
+                    onChange={(e) => handleSetFormData(e)}
+                  />{" "}
+                  and deliver them to{" "}
+                  <DashedInput
+                    value={formData["dropoff-location"]} // Prioritize form data
+                    name="dropoff-location"
+                    onChange={(e) => handleSetFormData(e)}
+                  />
+                  . The journey is expected to take approximately{" "}
+                  <DashedInput
+                    value={formData["hours"]}
+                    type="number"
+                    name="hours"
+                    width="50px"
+                    onChange={(e) => handleSetFormData(e)}
+                  />{" "}
+                  hours, ensuring safe and timely transportation while
+                  maintaining efficiency on the route.
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={submitData}
+                  disabled={isButtonDisabled} // Disable button conditionally
+                  endIcon={
+                    loading ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : null
+                  } // Show loading spinner
+                >
+                  {loading ? "Creating..." : "Create"}{" "}
+                  {/* Update button text */}
+                </Button>
+              </CardActions>
+            </Card>
+          </Box>
+        </React.Fragment>
       </div>
     </Box>
   );

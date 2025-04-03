@@ -9,17 +9,17 @@ import AppContext from "../contexts/AppContextProvider";
 
 export default function SpeedDial() {
   const { navigateTo } = React.useContext(AppContext);
-  const navigate = (r, p) => navigateTo(r, p, false);
+  const navigate = (r) => navigateTo(r, false);
   const actions = [
     {
-      icon: <FormatAlignLeftIcon />,
-      name: "Use form",
-      onClick: () => navigate("/create-trip", "form"),
+      icon: <EditIcon />,
+      name: "Card",
+      onClick: () => navigate("/create-trip/card"),
     },
     {
-      icon: <EditIcon />,
-      name: "Use card",
-      onClick: () => navigate("/create-trip", "card"),
+      icon: <FormatAlignLeftIcon />,
+      name: "Form",
+      onClick: () => navigate("/create-trip/form"),
     },
   ];
   return (
@@ -36,8 +36,18 @@ export default function SpeedDial() {
             xs: 23,
             sm: 51,
           },
+          "& button": {
+            background:
+              "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+            color: "white",
+            boxShadow: "0 3px 5px 2px rgba(80, 141, 78, 0.3)",
+            "&:hover": {
+              background:
+                "linear-gradient(45deg,rgb(66, 57, 226) 30%,rgb(11, 60, 61) 90%)", // Lighter green gradient on hover
+            },
+          },
         }}
-        icon={<SpeedDialIcon />}
+        icon={<SpeedDialIcon color="primary" />}
       >
         {actions.map((action) => (
           <SpeedDialAction

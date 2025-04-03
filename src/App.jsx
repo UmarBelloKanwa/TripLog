@@ -1,25 +1,23 @@
 import * as React from "react";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
-import { useDemoRouter } from "@toolpad/core/internal";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AppProvider from "./contexts/AppContext";
-import AppRoutes from "./AppRoutes";
+import AppRoutes from "./routes/AppRoutes";
 import AppTitle from "./components/TriplogTitle";
 import Toolbar from "./components/AppToolBar";
 import SidebarFooter from "./components/SidebarFooter";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
 import CreateIcon from "@mui/icons-material/Create";
-import MapIcon from "@mui/icons-material/Map";
-import CalendarViewWeekIcon from "@mui/icons-material/CalendarViewWeek";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import { Title } from "./components/TextField";
 import theme from "./theme";
 import { useLocation } from "react-router-dom";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
 
 const useIsMobile = () => {
   const theme = useTheme();
@@ -28,19 +26,14 @@ const useIsMobile = () => {
 
 export default function App() {
   const navigate = useNavigate();
-  const router = useDemoRouter("/");
   const isMobile = useIsMobile();
   const location = useLocation();
 
-
-  const navigateTo = (route, path = null, isFromMenu = true) => {
+  const navigateTo = (route, isFromMenu = true) => {
     if (route != location.pathname) {
       navigate(route);
-      router.navigate(route);
     }
-    if (path !== null && path != router.pathname) {
-      router.navigate(path);
-    }
+
     if (isMobile && isFromMenu) {
       document.querySelector("header .MuiButtonBase-root")?.click();
     }
@@ -48,11 +41,6 @@ export default function App() {
 
   return (
     <ReactRouterAppProvider
-      branding={{
-        logo: <LocalShippingIcon />,
-        title: "Triplog",
-        homeUrl: "/",
-      }}
       navigation={[
         { kind: "header", title: "Create" },
         {
@@ -67,8 +55,28 @@ export default function App() {
           icon: <></>,
           children: [
             { kind: "header", title: "Via" },
-            { segment: "form", title: "Form", icon: <FormatAlignLeftIcon /> },
-            { segment: "card", title: "Card", icon: <CreateIcon /> },
+            {
+              segment: "form",
+              title: (
+                <Title
+                  value="Form"
+                  Icon={FormatAlignLeftIcon}
+                  onClick={() => navigateTo("/create-trip/form")}
+                />
+              ),
+              icon: <></>,
+            },
+            {
+              segment: "card",
+              title: (
+                <Title
+                  value="Card"
+                  Icon={CreateIcon}
+                  onClick={() => navigateTo("/create-trip/card")}
+                />
+              ),
+              icon: <></>,
+            },
           ],
         },
         { kind: "divider" },
@@ -85,20 +93,35 @@ export default function App() {
           icon: <></>,
           children: [
             { kind: "header", title: "See" },
-            { segment: "last-created", title: "Last created", icon: <MapIcon /> },
+            {
+              segment: "last-created",
+              title: (
+                <Title
+                  value="Last created"
+                  Icon={HistoryEduIcon}
+                  onClick={() => navigateTo("/my-trips/last-created")}
+                />
+              ),
+              icon: <></>,
+            },
             {
               segment: "all-trips",
-              title: "All trips",
-              icon: <CalendarViewWeekIcon />,
+              title: (
+                <Title
+                  value="All trips"
+                  Icon={AlignHorizontalLeftIcon}
+                  onClick={() => navigateTo("/my-trips/all-trips")}
+                />
+              ),
+              icon: <></>,
             },
           ],
         },
         { kind: "divider" },
       ]}
-      router={router}
       theme={theme}
     >
-      <AppProvider navigateTo={navigateTo} route={location.pathname} pathname={router.pathname}>
+      <AppProvider navigateTo={navigateTo}>
         <DashboardLayout
           disableCollapsibleSidebar
           slots={{

@@ -2,20 +2,22 @@ import * as React from "react";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "./TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
+import useCreateTripForm from "../hooks/useCreateTripForm";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "fit-content",
   alignSelf: "center",
   width: "100%",
   padding: theme.spacing(2, 3),
@@ -29,8 +31,15 @@ const Card = styled(MuiCard)(({ theme }) => ({
   backgroundColor: "transparent",
 }));
 
-export default function CreateTrip() {
-  const loading = false;
+export default function CreateTripForm({ nextStep }) {
+  const {
+    formData,
+    handleSetFormData,
+    helperTexts,
+    goToNextStep,
+    loading,
+    disabled,
+  } = useCreateTripForm();
 
   return (
     <Card>
@@ -44,16 +53,16 @@ export default function CreateTrip() {
           gap: 2,
           m: "auto",
         }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          goToNextStep(nextStep);
+        }}
       >
-        <Alert severity="error">
-          <AlertTitle> Form Error </AlertTitle>
-          Err
-        </Alert>
-
         <TextField
-          value={""}
-          error={!!""}
-          helperText={""}
+          value={formData["current-location"]}
+          error={!!helperTexts["current-location"]}
+          helperText={helperTexts["current-location"]}
+          onChange={handleSetFormData}
           id="current-location"
           type="text"
           name="current-location"
@@ -75,9 +84,10 @@ export default function CreateTrip() {
         />
 
         <TextField
-          value={""}
-          error={!!""}
-          helperText={""}
+          value={formData["pickup-location"]}
+          error={!!helperTexts["pickup-location"]}
+          helperText={helperTexts["pickup-location"]}
+          onChange={handleSetFormData}
           id="pickup-location"
           type="text"
           name="pickup-location"
@@ -99,9 +109,10 @@ export default function CreateTrip() {
         />
 
         <TextField
-          value={""}
-          error={!!""}
-          helperText={""}
+          value={formData["dropoff-location"]}
+          error={!!helperTexts["dropoff-location"]}
+          helperText={helperTexts["dropoff-location"]}
+          onChange={handleSetFormData}
           id="dropup-location"
           type="text"
           name="dropoff-location"
@@ -123,9 +134,10 @@ export default function CreateTrip() {
         />
 
         <TextField
-          value={""}
-          error={!!""}
-          helperText={""}
+          value={formData["hours"]}
+          error={!!helperTexts["hours"]}
+          helperText={helperTexts["hours"]}
+          onChange={handleSetFormData}
           id="hours"
           type="texts"
           name="hours"
@@ -158,9 +170,9 @@ export default function CreateTrip() {
           endIcon={
             loading ? <CircularProgress size={20} color="inherit" /> : null
           }
-          disabled={loading}
+          disabled={disabled || loading}
         >
-          Create
+          Continue
         </Button>
       </Box>
     </Card>

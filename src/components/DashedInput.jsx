@@ -7,75 +7,63 @@ const DashedEditable = ({
   maxLength = 20,
   placeholder = "Type here...",
 }) => {
-  const divRef = useRef(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const textareaRef = useRef(null);
+  const [text, setText] = useState(value || "");
 
-  const div = divRef.current;
   useEffect(() => {
-    if (!div) return;
-
-    const adjustSize = () => {
-      div.style.width = "auto";
-      div.style.width = `${div.scrollWidth}px`;
-    };
-
-    adjustSize(); // Initial adjustment
-    div.addEventListener("input", adjustSize);
-
-    return () => div.removeEventListener("input", adjustSize);
-  }, [div, value]);
-
-  const handleSetIsEditing = () => {
-    if (div.innerText.trim() == placeholder) {
-      div.innerText = "";
-      setIsEditing(true);
+    const textarea = textareaRef.current;
+    if (textarea) {
+      adjustSize();
     }
-    setIsEditing(true);
+  }, [text]);
+
+  const adjustSize = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.width = "auto"; // Reset width to recalculate
+    textarea.style.width = `${textarea.scrollWidth}px`; // Set new width
   };
 
-  const handleInput = (e) => {
-    let text = e.target.innerText;
+  const handleChange = (e) => {
+    let newText = e.target.value;
 
-    if (text.length > maxLength) {
-      text = text.substring(0, maxLength); 
-      e.target.innerText = text; 
+    if (newText.length > maxLength) {
+      newText = newText.substring(0, maxLength);
     }
 
-    onChange(text);
-    handleSetIsEditing(); // Remove placeholder color when typing
-  };
-
-  const handleBlur = () => {
-    if (!div.innerText.trim()) {
-      div.innerText = placeholder;
-      div.style.color = "gray";
-      divRef.current.style.width = "auto";
-      setIsEditing(false);
-    }
+    setText(newText);
+    onChange({ target: { name, value: newText } });
   };
 
   return (
-    <span
-      id={name}
-      ref={divRef}
-      contentEditable
-      suppressContentEditableWarning
-      onInput={handleInput}
-      onFocus={handleSetIsEditing}
-      onBlur={handleBlur}
+    <textarea
+      ref={textareaRef}
+      name={name}
+      value={text}
+      onChange={handleChange}
+      placeholder={placeholder}
       style={{
+        border: "none",
         borderBottom: "1px dashed rgba(0, 0, 0, .7)",
-        display: "inline-block",
-        minWidth: "50px",
-        whiteSpace: "nowrap",
+        resize: "none",
+        overflow: "hidden",
         outline: "none",
-        fontSize: "inherit",
-        fontFamily: "inherit",
-        color: isEditing || value ? "white" : "gray", 
+        textAlign: "justify",
+        color: "inherit",
+        spellCheck: "false",
+        direction: "ltr",
+        width: "auto",
+        height: "1.5em",
+        lineHeight: "1.5em",
+        display: "inline-block",
+        verticalAlign: "baseline",
+        padding: "0 5px",
+        font: "100%",
+        backgroundColor: "transparent",
+        marginBottom: "-5px",
       }}
-    >
-      {value || placeholder}
-    </span>
+    />
   );
 };
 

@@ -32,8 +32,8 @@ const theme = createTheme({
           contrastText: "#FFFFFF",
         },
         background: {
-          default: "#1A1A1A", // Dark background
-          paper: "#121212",
+          default: "rgba(108, 48, 229, 0.14)", // Dark background
+          paper: "#050a19",
         },
         text: {
           primary: "rgb(193, 196, 244)",
@@ -75,8 +75,6 @@ const theme = createTheme({
         root: {
           background:
             "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
-          border: 0,
-          borderRadius: "14px",
           color: "white",
           "&:hover": {
             background:

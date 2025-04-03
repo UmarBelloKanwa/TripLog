@@ -12,7 +12,7 @@ export default function AppTitle({ isLink = true }) {
       alignItems="center"
       spacing={0}
       onClick={() => {
-        if (isLink) navigateTo("/", null, false);
+        if (isLink) navigateTo("/", "/", false);
       }}
     >
       <Box
@@ -43,7 +43,7 @@ export default function AppTitle({ isLink = true }) {
           fontWeight: "bold",
           fontSize: {
             xs: "1.5em",
-            sm: "2em"
+            sm: "2em",
           },
           letterSpacing: ".1rem",
           textDecoration: "none",

@@ -38,7 +38,7 @@ const TextField = ({ ...props }) => {
         input: {
           ...props.slotProps.input,
           ...(isFocused &&
-            props.value.length && {
+            props?.value?.length && {
               endAdornment: (
                 <InputAdornment position="end">
                   <ClearSharpIcon
