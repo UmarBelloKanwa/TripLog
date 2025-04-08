@@ -1,20 +1,15 @@
 import * as React from "react";
+import api from "../services";
 
-export default function useCreateTripCard(
-  data = {
-    "current-location": "",
-    "pickup-location": "",
-    "dropoff-location": "",
-    hours: "", // Default values
-  }
-) {
+export default function useCreateTripCard(data) {
   const steps = [
     "Set current location",
     "Set pickup location",
     "Set dropoff location",
     "Set hours to spend",
   ];
-  const [formData, setFormData] = React.useState(data); // Initialize with `data` or defaults
+
+  const [formData, setFormData] = React.useState(data);
 
   const [helperTexts, setHelperTexts] = React.useState({});
 
@@ -26,9 +21,9 @@ export default function useCreateTripCard(
     }
 
     switch (name) {
-      case "current-location":
-      case "pickup-location":
-      case "dropoff-location":
+      case "current_location":
+      case "pickup_location":
+      case "dropoff_location":
         if (value.length < 3) {
           return "Location must be at least 3 characters long.";
         }
@@ -53,7 +48,7 @@ export default function useCreateTripCard(
 
   const [completed, setCompleted] = React.useState(() => {
     // Initialize completed state based on the validity of the provided data
-    return Object.keys(data).reduce((acc, key, index) => {
+    return Object.keys(formData).reduce((acc, key, index) => {
       const isValid = !validateInput(key, data[key]); // Check if the input is valid
       if (isValid) {
         acc[index] = true; // Mark step as completed if valid
@@ -63,7 +58,7 @@ export default function useCreateTripCard(
   });
 
   const isStepFailed = (step) => {
-    const key = Object.keys(data)[step];
+    const key = Object.keys(formData)[step];
     return helperTexts[key];
   };
 
@@ -146,7 +141,7 @@ export default function useCreateTripCard(
 
   const [loading, setLoading] = React.useState(false); // Add loading state
 
-  const submitData = () => {
+  const submitData = async () => {
     const isValid = areInputsValid(); // Ensure helperTexts is updated
     if (!isValid) {
       // If inputs are invalid, helperTexts will already be updated
@@ -166,7 +161,13 @@ export default function useCreateTripCard(
       );
 
       alert("Trip created successfully!");
-      setLoading(false); // Stop loading after the delay
+      try {
+        const d = api.createTrip(formData);
+        api.storeTrip(d);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
     }, 3000); // 3-second delay
   };
 

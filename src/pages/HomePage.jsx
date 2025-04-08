@@ -134,13 +134,13 @@ export default function Home() {
         - Simplifying Your Journey, One Log at a Time!
       </Typography>
       <Typography
-        variant="body1"
+        variant="h1"
         sx={(theme) => ({
           margin: "auto",
           mt: 2,
           fontSize: {
             xs: "normal",
-            sm: "large",
+            sm: "x-large",
           },
           textAlign: "center",
           fontWeight: {

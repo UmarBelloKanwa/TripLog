@@ -1,20 +1,9 @@
 import * as React from "react";
 
-export default function useCreateTripForm() {
-  const main = {
-    "current-location": "",
-    "pickup-location": "",
-    "dropoff-location": "",
-    hours: "", // Current Cycle Used (Hrs)
-  };
-  const [formData, setFormData] = React.useState({
-    "current-location": "Sokoto",
-    "pickup-location": "Zamfara",
-    "dropoff-location": "Kano",
-    hours: "12", // Current Cycle Used (Hrs)
-  });
+export default function useCreateTripForm(data) {
+  const [formData, setFormData] = React.useState(data);
 
-  const [helperTexts, setHelperTexts] = React.useState(main);
+  const [helperTexts, setHelperTexts] = React.useState({});
 
   const [loading, setLoading] = React.useState(false);
   const [disabled, setDisabled] = React.useState(false);
@@ -38,7 +27,7 @@ export default function useCreateTripForm() {
 
     switch (name) {
       case "current-location":
-      case "pickup-location":
+      case "pickup_location":
       case "dropoff-location":
         if (value.length < 3) {
           return "Location must be at least 3 characters long.";

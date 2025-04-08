@@ -40,12 +40,11 @@ export default function AppTitle({ isLink = true }) {
           marginInlineStart: -0.5,
           display: "flex",
           fontFamily: "monospace",
-          fontWeight: "bold",
+          fontWeight: "bolder",
           fontSize: {
             xs: "1.5em",
             sm: "2em",
           },
-          letterSpacing: ".1rem",
           textDecoration: "none",
         }}
       >

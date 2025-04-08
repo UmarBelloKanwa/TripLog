@@ -1,51 +1,40 @@
 import * as React from "react";
 import CreateTripForm from "../components/CreateTripForm";
 import CreateTripCard from "../components/CreateTripCard";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useLocation } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 
 const CreateTrip = () => {
-  const [tripData, setTripData] = React.useState({});
+  const [tripData, setTripData] = React.useState({
+    current_location: "",
+    pickup_location: "",
+    dropoff_location: "",
+    hours: "", // Current Cycle Used (Hrs)
+  });
 
-  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  let isForm =
-    pathname == "/create-trip" ||
-    pathname == "/form" ||
-    pathname == "/create-trip/form" ||
-    pathname == "/";
-  const [step, setStep] = React.useState(isForm ? "form" : "card");
-
-  isForm = isForm && step == "form";
+  const Form = () => (
+    <CreateTripForm
+      data={tripData}
+      nextStep={(data) => {
+        setTripData(data);
+        navigate("/create-trip/card");
+      }}
+    />
+  );
 
   return (
-    <Box
-      sx={{
-        textAlign: "center",
-        m: "auto",
-      }}
-    >
-      <Typography
-        variant="h4"
-        textAlign="left"
-        sx={{ width: "fit-content", m: 0, mt: 0.7, mb: 0.5 }}
-      >
-        Create new trip
-      </Typography>
-      {isForm && (
-        <CreateTripForm
-          nextStep={(data) => {
-            setTripData(data); // Ensure tripData is updated with form data
-            setStep("card");
-          }}
-        />
-      )}
-      {(pathname == "/create-trip/card" ||
-        pathname == "/card" ||
-        step == "card") && (
-        <CreateTripCard data={tripData} /> // Pass tripData to CreateTripCard
-      )}
+    <Box sx={{ textAlign: "center", m: "auto" }}>
+      <h1 style={{ textAlign: "left", marginTop: 13.5, marginBottom: 13 }}>
+        Create Trip
+      </h1>
+      <Routes>
+        <Route index element={<Form />} />
+        <Route path="form" element={<Form />} />
+        <Route path="*" element={<Form />} />
+        <Route path="card" element={<CreateTripCard data={tripData} />} />
+      </Routes>
     </Box>
   );
 };

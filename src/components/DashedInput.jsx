@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useTheme } from "@mui/material/styles";
 
 const DashedEditable = ({
   name,
@@ -7,6 +8,8 @@ const DashedEditable = ({
   maxLength = 20,
   placeholder = "Type here...",
 }) => {
+  const theme = useTheme();
+
   const textareaRef = useRef(null);
   const [text, setText] = useState(value || "");
 
@@ -45,12 +48,12 @@ const DashedEditable = ({
       placeholder={placeholder}
       style={{
         border: "none",
-        borderBottom: "1px dashed rgba(0, 0, 0, .7)",
+        borderBottom: `1px dashed ${theme.palette.divider}`,
         resize: "none",
         overflow: "hidden",
         outline: "none",
-        textAlign: "justify",
-        color: "inherit",
+        textAlign: "center",
+        color: theme.palette.text.secondary,
         spellCheck: "false",
         direction: "ltr",
         width: "auto",
@@ -58,9 +61,11 @@ const DashedEditable = ({
         lineHeight: "1.5em",
         display: "inline-block",
         verticalAlign: "baseline",
-        padding: "0 5px",
+        padding: "0px",
         font: "100%",
+        fontSize: "inherit",
         backgroundColor: "transparent",
+        margin: "0 10px",
         marginBottom: "-5px",
       }}
     />

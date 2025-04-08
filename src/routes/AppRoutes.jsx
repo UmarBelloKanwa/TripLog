@@ -12,6 +12,7 @@ const AppRoutes = () => {
         <Route index element={<HomePage />} />
         <Route path="/create-trip/*" element={<CreateTripPage />} />
         <Route path="/my-trips/*" element={<MyTripPage />} />
+        <Route path="*" element={<HomePage />} />
       </Route>
     </Routes>
   );

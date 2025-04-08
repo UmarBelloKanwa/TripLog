@@ -23,7 +23,7 @@ import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
 import UseCreateTripCard from "../hooks/UseCreateTripCard";
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -208,26 +208,31 @@ export default function CreateTripCard({ data }) {
                 })}
               </Stepper>
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography
+                  gutterBottom
+                  variant="h4"
+                  component="div"
+                  color="primary"
+                >
                   About the trip
                 </Typography>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                <Typography variant="body1">
                   Currently, I am at{" "}
                   <DashedInput
-                    value={formData["current-location"]} // Prioritize form data
-                    name="current-location"
+                    value={formData["current_location"]} // Prioritize form data
+                    name="current_location"
                     onChange={(e) => handleSetFormData(e)}
                   />{" "}
                   , preparing to pick up goods from{" "}
                   <DashedInput
-                    value={formData["pickup-location"]} // Prioritize form data
-                    name="pickup-location"
+                    value={formData["pickup_location"]} // Prioritize form data
+                    name="pickup_location"
                     onChange={(e) => handleSetFormData(e)}
                   />{" "}
                   and deliver them to{" "}
                   <DashedInput
-                    value={formData["dropoff-location"]} // Prioritize form data
-                    name="dropoff-location"
+                    value={formData["dropoff_location"]} // Prioritize form data
+                    name="dropoff_location"
                     onChange={(e) => handleSetFormData(e)}
                   />
                   . The journey is expected to take approximately{" "}
@@ -246,7 +251,7 @@ export default function CreateTripCard({ data }) {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={submitData}
+                  onClick={async () => await submitData()}
                   disabled={isButtonDisabled} // Disable button conditionally
                   endIcon={
                     loading ? (

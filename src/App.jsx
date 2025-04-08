@@ -1,7 +1,6 @@
 import * as React from "react";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AppProvider from "./contexts/AppContext";
@@ -15,7 +14,7 @@ import CreateIcon from "@mui/icons-material/Create";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import { Title } from "./components/TextField";
 import theme from "./theme";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
 

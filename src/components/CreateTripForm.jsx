@@ -31,7 +31,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   backgroundColor: "transparent",
 }));
 
-export default function CreateTripForm({ nextStep }) {
+export default function CreateTripForm({ data, nextStep }) {
   const {
     formData,
     handleSetFormData,
@@ -39,7 +39,7 @@ export default function CreateTripForm({ nextStep }) {
     goToNextStep,
     loading,
     disabled,
-  } = useCreateTripForm();
+  } = useCreateTripForm(data);
 
   return (
     <Card>
@@ -59,13 +59,13 @@ export default function CreateTripForm({ nextStep }) {
         }}
       >
         <TextField
-          value={formData["current-location"]}
-          error={!!helperTexts["current-location"]}
-          helperText={helperTexts["current-location"]}
+          value={formData["current_location"]}
+          error={!!helperTexts["current_location"]}
+          helperText={helperTexts["current_location"]}
           onChange={handleSetFormData}
-          id="current-location"
+          id="current_location"
           type="text"
-          name="current-location"
+          name="current_location"
           label="Current loaction"
           placeholder="Where you are now"
           autoComplete="loacation"
@@ -84,16 +84,16 @@ export default function CreateTripForm({ nextStep }) {
         />
 
         <TextField
-          value={formData["pickup-location"]}
-          error={!!helperTexts["pickup-location"]}
-          helperText={helperTexts["pickup-location"]}
+          value={formData["pickup_location"]}
+          error={!!helperTexts["pickup_location"]}
+          helperText={helperTexts["pickup_location"]}
           onChange={handleSetFormData}
-          id="pickup-location"
+          id="pickup_location"
           type="text"
-          name="pickup-location"
+          name="pickup_location"
           label="Pickup location"
           placeholder="Pickup location"
-          autoComplete="pickup-location"
+          autoComplete="pickup_location"
           slotProps={{
             inputLabel: {
               shrink: true,
@@ -109,16 +109,16 @@ export default function CreateTripForm({ nextStep }) {
         />
 
         <TextField
-          value={formData["dropoff-location"]}
-          error={!!helperTexts["dropoff-location"]}
-          helperText={helperTexts["dropoff-location"]}
+          value={formData["dropoff_location"]}
+          error={!!helperTexts["dropoff_location"]}
+          helperText={helperTexts["dropoff_location"]}
           onChange={handleSetFormData}
           id="dropup-location"
           type="text"
-          name="dropoff-location"
+          name="dropoff_location"
           label="Dropoff location"
           placeholder="Dropoff location"
-          autoComplete="dropoff-location"
+          autoComplete="dropoff_location"
           slotProps={{
             inputLabel: {
               shrink: true,
