@@ -17,7 +17,7 @@ import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import AppTitle from "../components/TriplogTitle";
+import AppTitle from "../components/AppTitle";
 
 const steps = [
   {
@@ -106,7 +106,7 @@ export default function Home() {
 
   const handleReset = () => {
     setActiveStep(0);
-    navigateTo("/create-trip");
+    navigateTo("/create-trip", false);
   };
 
   return (
@@ -134,17 +134,18 @@ export default function Home() {
         - Simplifying Your Journey, One Log at a Time!
       </Typography>
       <Typography
-        variant="h1"
+        variant="subtitle1"
         sx={(theme) => ({
+          display: "block",
           margin: "auto",
           mt: 2,
           fontSize: {
-            xs: "normal",
+            xs: "16px",
             sm: "x-large",
           },
           textAlign: "center",
           fontWeight: {
-            xs: "400",
+            xs: "500",
             sm: "bold",
           },
           backgroundImage:
@@ -326,10 +327,6 @@ export default function Home() {
           variant="subtitle2"
           sx={{
             mt: 7,
-            fontStyle: "italic",
-            fontWeight: "100",
-            letterSpacing: "1px",
-            color: "inherit",
           }}
         >
           Whether you're a long-haul trucker or a logistics company,{" "}

@@ -1,13 +1,17 @@
 import * as React from "react";
 import api from "../services";
+import { useNavigate } from "react-router-dom";
 
 export default function useCreateTripCard(data) {
   const steps = [
-    "Set current location",
-    "Set pickup location",
-    "Set dropoff location",
-    "Set hours to spend",
+    "Current location",
+    "Pickup location",
+    "Dropoff location",
+    "Hours to spend",
+    "Trip name",
   ];
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = React.useState(data);
 
@@ -15,20 +19,23 @@ export default function useCreateTripCard(data) {
 
   const [activeStep, setActiveStep] = React.useState(0);
 
+  const [errorFeedback, setErrorFeedback] = React.useState(null);
+
   const validateInput = (name, value) => {
-    if (!value.trim()) {
+    if (!String(value).trim()) {
       return "This field is required.";
     }
-
+    let n = name != "trip_name" ? "Location" : "Trip name";
     switch (name) {
       case "current_location":
       case "pickup_location":
       case "dropoff_location":
+      case "trip_name":
         if (value.length < 3) {
-          return "Location must be at least 3 characters long.";
+          return `${n} must be at least 3 characters long.`;
         }
         if (!/^[a-zA-Z\s.,'-]+$/.test(value)) {
-          return "Location must contain only letters, spaces, and common punctuation.";
+          return `${n} must contain only letters, spaces, and common punctuation.`;
         }
         break;
       case "hours":
@@ -120,20 +127,31 @@ export default function useCreateTripCard(data) {
     const newCompleted = {};
     let isValid = true;
 
-    Object.keys(formData).forEach((key, index) => {
+    const keys = Object.keys(formData);
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
       const validationMessage = validateInput(key, formData[key]);
+
       newHelperTexts[key] = validationMessage;
+
       if (!validationMessage) {
-        newCompleted[index] = true; // Mark step as completed if valid
+        newCompleted[i] = true;
       } else {
-        isValid = false; // Mark as invalid if any input fails validation
+        isValid = false;
+
+        if (key !== "trip_name") {
+          navigate("/create-trip/form"); // Only runs once
+        }
+
+        break; // ✅ stop checking further inputs after the first invalid one
       }
-    });
+    }
 
     setHelperTexts(newHelperTexts); // Update helper texts
     setCompleted(newCompleted); // Update completed steps
     return isValid; // Return overall validity
-  }, [formData]);
+  }, [formData, navigate]);
 
   React.useEffect(() => {
     areInputsValid(); // Revalidate inputs whenever formData changes
@@ -148,29 +166,39 @@ export default function useCreateTripCard(data) {
       return;
     }
 
-    setLoading(true); // Start loading
-    setTimeout(() => {
-      // Simulate a delay
-      // Clear helperTexts and mark all steps as completed
-      setHelperTexts({});
-      setCompleted(
-        Object.keys(formData).reduce((acc, key, index) => {
-          acc[index] = true;
-          return acc;
-        }, {})
-      );
+    setLoading(true);
+    // Clear helperTexts and mark all steps as completed
+    setHelperTexts({});
+    setCompleted(
+      Object.keys(formData).reduce((acc, key, index) => {
+        acc[index] = true;
+        return acc;
+      }, {})
+    );
 
-      alert("Trip created successfully!");
-      try {
-        const d = api.createTrip(formData);
-        api.storeTrip(d);
-      } catch (err) {
-        console.error(err);
+    try {
+      const response = await api.createTrip(formData);
+      console.log("response:", response);
+      const data = await response.json();
+      console.log("response data", data);
+
+      if (response.ok) {
+        api.storeTrip(data);
+        navigate("/my-trips/last-created");
+      } else {
+        setErrorFeedback(`An unexpected error occured, ${data?.message}`);
       }
-      setLoading(false);
-    }, 3000); // 3-second delay
+    } catch /*(err)*/ {
+      setErrorFeedback(
+        `An unexpected error occured, Failed to Fetch, Please try again!!!`
+      );
+    }
+    setLoading(false);
   };
 
+  const handleCloseErrorFeedback = () => {
+    setErrorFeedback(null);
+  };
   return {
     formData,
     handleSetFormData,
@@ -184,6 +212,8 @@ export default function useCreateTripCard(data) {
     completed,
     handleStep,
     isStepFailed,
-    loading, // Expose loading state
+    loading,
+    errorFeedback,
+    handleCloseErrorFeedback,
   };
 }

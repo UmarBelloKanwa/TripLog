@@ -1,12 +1,53 @@
 import * as React from "react";
+import api from "../services";
 
 export default function useCreateTripForm(data) {
   const [formData, setFormData] = React.useState(data);
-
   const [helperTexts, setHelperTexts] = React.useState({});
-
   const [loading, setLoading] = React.useState(false);
   const [disabled, setDisabled] = React.useState(false);
+
+  const [currentLocationPlaceholder, setCurrentLocationPlaceholder] =
+    React.useState("Where you are now");
+  const [pickupLocationPlaceholder, setPickupLocationPlaceholder] =
+    React.useState("Pickup location");
+  const [dropoffLocationPlaceholder, setDropoffLocationPlaceholder] =
+    React.useState("Dropoff location");
+
+  React.useEffect(() => {
+    const fetchCurrentLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+              const results = await api.reverseGeocode(latitude, longitude);
+              if (results.length > 0) {
+                setCurrentLocationPlaceholder(results[0].label);
+
+                // Extract the country from the reverse geocode results
+                const country = results[0].label.split(",").pop().trim();
+
+                // Fetch two popular locations in the user's country
+                const countryLocations = await api.fetchLocations(country);
+                if (countryLocations.length >= 2) {
+                  setPickupLocationPlaceholder(countryLocations[0].label);
+                  setDropoffLocationPlaceholder(countryLocations[1].label);
+                }
+              }
+            } catch /*(error)*/ {
+              //console.warn("Error fetching current location or country locations:", error);
+            }
+          },
+          (/*error*/) => {
+            //console.warn("Geolocation error:", error);
+          }
+        );
+      }
+    };
+
+    fetchCurrentLocation();
+  }, []);
 
   const handleSetFormData = (e) => {
     setFormData((prev) => ({
@@ -58,7 +99,9 @@ export default function useCreateTripForm(data) {
       const validationMessage = validateInput(key, formData[key]);
       newHelperTexts[key] = validationMessage;
       if (validationMessage) {
-        isValid = false;
+        if (key != "trip_name") {
+          isValid = false;
+        }
       }
     });
     return { isValid, newHelperTexts };
@@ -93,5 +136,8 @@ export default function useCreateTripForm(data) {
     goToNextStep,
     loading,
     disabled,
+    currentLocationPlaceholder,
+    pickupLocationPlaceholder,
+    dropoffLocationPlaceholder,
   };
 }

@@ -58,7 +58,7 @@ const theme = createTheme({
         paper: ({ theme }) => ({
           //backgroundColor: theme.palette.background.default, // Sidebar background
           color: theme.palette.text.primary,
-          borderRight: `1px solid ${theme.palette.primary.main}`,
+          //borderRight: `1px solid ${theme.palette.primary.main}`,
         }),
       },
     },
@@ -70,6 +70,7 @@ const theme = createTheme({
         }),
       },
     },
+
     MuiChip: {
       styleOverrides: {
         root: {

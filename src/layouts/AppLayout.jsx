@@ -9,6 +9,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import HomeIcon from "@mui/icons-material/Home";
 import StyledBreadcrumb from "../components/StyledBreadcrumb";
 import { useLocation, Link } from "react-router-dom";
+import NetworkStatusNotifier from "../components/NetworkStatus";
 
 export default function AppLayout() {
   const { data } = React.useContext(AppContext);
@@ -110,6 +111,7 @@ export default function AppLayout() {
           <Outlet />
         </main>
         <SpeedDeal />
+        <NetworkStatusNotifier />
       </Container>
     </Paper>
   );

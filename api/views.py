@@ -8,7 +8,7 @@ from .utils import generate_map_data, GeocodingError
 @api_view(["POST"])
 def create_trip(request: HttpRequest) -> Response:
   serializer = TripData(data=request.data)
-
+  
   if not serializer.is_valid():
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
@@ -29,3 +29,7 @@ def create_trip(request: HttpRequest) -> Response:
       "map": map_data
     }
   })
+
+""" 
+Error while generating route directions: 404 ({'er…version': '9.1.1'}, 'timestamp': 1744431002482}})"}message: "Error while generating route directions: 404 ({'error': {'code': 2010, 'message': 'Could not find routable point within a radius of 350.0 meters of specified coordinate 2: -96.9591190 40.9104270.'}, 'info': {'engine': {'build_date': '2025-03-14T11:07:03Z', 'graph_version': '1', 'version': '9.1.1'}, 'timestamp': 1744431002482}})"[[Prototype]]: Object
+"""

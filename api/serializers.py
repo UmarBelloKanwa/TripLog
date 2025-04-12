@@ -4,7 +4,8 @@ class TripData(serializers.Serializer):
     current_location = serializers.CharField(max_length=100)
     pickup_location = serializers.CharField(max_length=100)
     dropoff_location = serializers.CharField(max_length=100)
-    hours = serializers.IntegerField() # current_cycle_hours 
+    hours = serializers.IntegerField(min_value=1, max_value=24) # current_cycle_hours 
+    trip_name = serializers.CharField()
 
     def validate_hours(self, value):
         if value < 1:

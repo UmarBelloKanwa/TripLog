@@ -12,7 +12,7 @@ export default function AppTitle({ isLink = true }) {
       alignItems="center"
       spacing={0}
       onClick={() => {
-        if (isLink) navigateTo("/", "/", false);
+        if (isLink) navigateTo("/", false);
       }}
     >
       <Box
@@ -40,7 +40,7 @@ export default function AppTitle({ isLink = true }) {
           marginInlineStart: -0.5,
           display: "flex",
           fontFamily: "monospace",
-          fontWeight: "bolder",
+          fontWeight: "bold",
           fontSize: {
             xs: "1.5em",
             sm: "2em",
@@ -53,3 +53,29 @@ export default function AppTitle({ isLink = true }) {
     </Stack>
   );
 }
+
+
+export const Title = ({ value, Icon, onClick }) => {
+  let TheIcon = Icon;
+  return (
+    <Box
+      component="span"
+      sx={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: "flex",
+        alignItems: "center",
+        paddingInlineStart: 1,
+      }}
+      onClick={onClick}
+    >
+      {<TheIcon sx={{ mr: 2.8 }} />}
+      {value}
+    </Box>
+  );
+};

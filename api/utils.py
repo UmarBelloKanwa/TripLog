@@ -1,5 +1,5 @@
-from openrouteservice import convert 
-from openrouteservice import Client
+from openrouteservice import Client, convert
+from openrouteservice.exceptions import ApiError
 from .serializers import TripData
 import os
 from dotenv import load_dotenv
@@ -25,19 +25,26 @@ def get_location_coordinate(location: str, label: str) -> list:
         else:
             raise GeocodingError(f"{label} not found. Please check the name and try again.")
     except Exception as e:
-        raise GeocodingError(f"Error while looking up {label}: {str(e)}")
+        raise GeocodingError(f"Error while looking up {label}")
 
 def get_route_directions(coordinates: list):
     try:
-        response = client.directions(
+        return client.directions(
             coordinates=coordinates,
             profile="driving-car",
             format="geojson",
             instructions=True,
         )
-        return response
-    except Exception as e:
-        raise GeocodingError(f"Error while generating route directions: {str(e)}")
+    except ApiError as e:
+        # e.args is something like: (status_code, response_dict)
+        # find the dict in e.args:
+        body = next((arg for arg in e.args if isinstance(arg, dict)), None)
+        if body and 'error' in body:
+            message = body['error'].get('message', str(e))
+        else:
+            message = str(e)
+        # raise your own exception with that message
+        raise GeocodingError(message)
 
 def extract_summary(route_data: dict):
     try:
@@ -56,7 +63,7 @@ def get_fuel_stops(route_data, every_miles=1000):
         total_miles = round(route_data["features"][0]["properties"]["summary"]["distance"] / 1609.34, 2)
         num_stops = int(total_miles // every_miles)
 
-        if num_stops == 0:
+        if num_stops == 0:        
             return []
 
         points_interval = len(geometry) // (num_stops + 1)

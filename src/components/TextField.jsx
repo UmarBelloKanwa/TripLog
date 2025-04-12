@@ -2,7 +2,6 @@ import * as React from "react";
 import { default as MuiTextField } from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import ClearSharpIcon from "@mui/icons-material/ClearSharp";
-import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
 const StyledTextField = styled(MuiTextField)(({ theme }) => ({
@@ -20,7 +19,7 @@ const StyledTextField = styled(MuiTextField)(({ theme }) => ({
   },
 }));
 
-const TextField = ({ ...props }) => {
+const TextField = ({ needToClear = true, ...props }) => {
   const [isFocused, setIsFocused] = React.useState(false);
   return (
     <StyledTextField
@@ -34,10 +33,10 @@ const TextField = ({ ...props }) => {
       onBlur={() => setTimeout(() => setIsFocused(false), 300)}
       slotProps={{
         ...props.slotProps,
-        inputLabel: { shrink: true },
         input: {
-          ...props.slotProps.input,
-          ...(isFocused &&
+          ...props?.slotProps?.input,
+          ...(needToClear &&
+            isFocused &&
             props?.value?.length && {
               endAdornment: (
                 <InputAdornment position="end">
@@ -58,28 +57,3 @@ const TextField = ({ ...props }) => {
 };
 
 export default TextField;
-
-export const Title = ({ value, Icon, onClick }) => {
-  let TheIcon = Icon;
-  return (
-    <Box
-      component="span"
-      sx={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: "flex",
-        alignItems: "center",
-        paddingInlineStart: 1,
-      }}
-      onClick={onClick}
-    >
-      {<TheIcon sx={{ mr: 2.8 }} />}
-      {value}
-    </Box>
-  );
-};

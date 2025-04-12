@@ -13,7 +13,6 @@ import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import ShareIcon from "@mui/icons-material/Share";
-import DashedInput from "./DashedInput";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
@@ -24,6 +23,12 @@ import StepConnector, {
 } from "@mui/material/StepConnector";
 import UseCreateTripCard from "../hooks/UseCreateTripCard";
 import CircularProgress from "@mui/material/CircularProgress";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import useIsMobile from "../hooks/useIsMobile";
+import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -92,6 +97,7 @@ function ColorlibStepIcon(props) {
     2: <LocationCityIcon />,
     3: <FmdGoodIcon />,
     4: <QueryBuilderIcon />,
+    5: <DriveFileRenameOutlineIcon />,
   };
 
   return (
@@ -115,8 +121,10 @@ export default function CreateTripCard({ data }) {
     completed,
     handleStep,
     isStepFailed,
-    helperTexts, // Add helperTexts here
-    loading, // Use loading state
+    helperTexts,
+    loading,
+    errorFeedback,
+    handleCloseErrorFeedback,
   } = UseCreateTripCard(data); // Pass `data` to the hook
 
   const isButtonDisabled =
@@ -124,6 +132,8 @@ export default function CreateTripCard({ data }) {
     Object.values(helperTexts).some((text) => text) || // Use helperTexts here
     loading;
   // Disable button if no steps are completed, any helper text exists, or loading is true
+
+  const isMobile = useIsMobile();
 
   return (
     <Box
@@ -171,20 +181,29 @@ export default function CreateTripCard({ data }) {
               />
               <CardMedia
                 component="img"
-                height="194"
                 image="/images/eveningTruck.jpg"
                 alt="Truck image"
+                sx={{
+                  height: {
+                    xs: 200,
+                    sm: 300,
+                  },
+                  borderRadius: 9,
+                }}
               />
               <Stepper
                 alternativeLabel
                 activeStep={activeStep}
                 connector={<ColorlibConnector />}
-                sx={{ width: "90%", margin: "1em auto auto auto" }}
+                sx={{ width: "100%", margin: "1em auto auto auto" }}
               >
                 {steps.map((label, index) => {
+                  if (isMobile && index === 0) {
+                    return;
+                  }
                   const labelProps = {};
                   const helperText = isStepFailed(index);
-                  if (helperText) {
+                  if (!isMobile && helperText) {
                     labelProps.optional = (
                       <Typography variant="caption" color="error">
                         {helperText}
@@ -208,41 +227,47 @@ export default function CreateTripCard({ data }) {
                 })}
               </Stepper>
               <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h4"
-                  component="div"
-                  color="primary"
-                >
-                  About the trip
-                </Typography>
-                <Typography variant="body1">
+                <TextField
+                  id="standard-textarea"
+                  variant="standard"
+                  multiline
+                  sx={(theme) => ({
+                    color: theme.palette.text.secondary,
+                    width: "50%",
+                    backgroundColor: "transparent",
+                    mb: 3,
+                    mt: 2,
+                    font: "100%",
+                    fontSize: "17px",
+                    fontWeight: "600",
+                  })}
+                  spellCheck={false}
+                  placeholder="Trip Name..."
+                  name="trip_name"
+                  onChange={handleSetFormData}
+                  value={formData["trip_name"]}
+                  maxLength={30}
+                  error={!!helperTexts["trip_name"]}
+                  helperText={isMobile ? helperTexts["trip_name"] : null}
+                />
+
+                <Typography variant="body1" sx={{ textAlign: "justify" }}>
                   Currently, I am at{" "}
-                  <DashedInput
-                    value={formData["current_location"]} // Prioritize form data
-                    name="current_location"
-                    onChange={(e) => handleSetFormData(e)}
-                  />{" "}
-                  , preparing to pick up goods from{" "}
-                  <DashedInput
-                    value={formData["pickup_location"]} // Prioritize form data
-                    name="pickup_location"
-                    onChange={(e) => handleSetFormData(e)}
-                  />{" "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {formData["current_location"]}
+                  </span>
+                  , preparing to pick up goods from{"  "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {formData["pickup_location"]}{" "}
+                  </span>
                   and deliver them to{" "}
-                  <DashedInput
-                    value={formData["dropoff_location"]} // Prioritize form data
-                    name="dropoff_location"
-                    onChange={(e) => handleSetFormData(e)}
-                  />
-                  . The journey is expected to take approximately{" "}
-                  <DashedInput
-                    value={formData["hours"]}
-                    type="number"
-                    name="hours"
-                    width="50px"
-                    onChange={(e) => handleSetFormData(e)}
-                  />{" "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {formData["dropoff_location"]}.{" "}
+                  </span>
+                  The journey is expected to take approximately{" "}
+                  <span style={{ fontWeight: "bold" }}>
+                    {formData["hours"]}{" "}
+                  </span>
                   hours, ensuring safe and timely transportation while
                   maintaining efficiency on the route.
                 </Typography>
@@ -259,12 +284,27 @@ export default function CreateTripCard({ data }) {
                     ) : null
                   } // Show loading spinner
                 >
-                  {loading ? "Creating..." : "Create"}{" "}
-                  {/* Update button text */}
+                  {loading ? "Creating..." : "Create"}
                 </Button>
               </CardActions>
             </Card>
           </Box>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={!!errorFeedback}
+            //autoHideDuration={6000}
+            onClose={handleCloseErrorFeedback}
+            sx={{ width: { xs: "55%", sm: "40%" } }}
+          >
+            <Alert
+              onClose={handleCloseErrorFeedback}
+              severity="error"
+              variant="standard"
+            >
+              <AlertTitle> Error Creating Trip </AlertTitle>
+              {errorFeedback}
+            </Alert>
+          </Snackbar>
         </React.Fragment>
       </div>
     </Box>

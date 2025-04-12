@@ -11,6 +11,7 @@ import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import useCreateTripForm from "../hooks/useCreateTripForm";
 import CircularProgress from "@mui/material/CircularProgress";
+import LocationInput from "./LocationInput";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -39,7 +40,12 @@ export default function CreateTripForm({ data, nextStep }) {
     goToNextStep,
     loading,
     disabled,
+    currentLocationPlaceholder,
+    pickupLocationPlaceholder,
+    dropoffLocationPlaceholder
   } = useCreateTripForm(data);
+
+  
 
   return (
     <Card>
@@ -58,21 +64,15 @@ export default function CreateTripForm({ data, nextStep }) {
           goToNextStep(nextStep);
         }}
       >
-        <TextField
+        <LocationInput
           value={formData["current_location"]}
           error={!!helperTexts["current_location"]}
           helperText={helperTexts["current_location"]}
           onChange={handleSetFormData}
-          id="current_location"
-          type="text"
           name="current_location"
-          label="Current loaction"
-          placeholder="Where you are now"
-          autoComplete="loacation"
+          label="Current Location"
+          placeholder={currentLocationPlaceholder} // Dynamic placeholder
           slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
             input: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -83,21 +83,15 @@ export default function CreateTripForm({ data, nextStep }) {
           }}
         />
 
-        <TextField
+        <LocationInput
           value={formData["pickup_location"]}
           error={!!helperTexts["pickup_location"]}
           helperText={helperTexts["pickup_location"]}
           onChange={handleSetFormData}
-          id="pickup_location"
-          type="text"
           name="pickup_location"
-          label="Pickup location"
-          placeholder="Pickup location"
-          autoComplete="pickup_location"
+          label="Pickup Location"
+          placeholder={pickupLocationPlaceholder} // Dynamic placeholder
           slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
             input: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -108,21 +102,15 @@ export default function CreateTripForm({ data, nextStep }) {
           }}
         />
 
-        <TextField
+        <LocationInput
           value={formData["dropoff_location"]}
           error={!!helperTexts["dropoff_location"]}
           helperText={helperTexts["dropoff_location"]}
           onChange={handleSetFormData}
-          id="dropup-location"
-          type="text"
           name="dropoff_location"
-          label="Dropoff location"
-          placeholder="Dropoff location"
-          autoComplete="dropoff_location"
+          label="Dropoff Location"
+          placeholder={dropoffLocationPlaceholder} // Dynamic placeholder
           slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
             input: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -138,12 +126,9 @@ export default function CreateTripForm({ data, nextStep }) {
           error={!!helperTexts["hours"]}
           helperText={helperTexts["hours"]}
           onChange={handleSetFormData}
-          id="hours"
-          type="texts"
           name="hours"
           label="Current Cycle Used Hours"
           placeholder="Current Cycle Used (Hrs)"
-          autoComplete="hours"
           slotProps={{
             inputLabel: {
               shrink: true,

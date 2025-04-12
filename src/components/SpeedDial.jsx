@@ -1,35 +1,35 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import SpeedDl from "@mui/material/SpeedDial";
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import EditIcon from "@mui/icons-material/Edit";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import AppContext from "../contexts/AppContextProvider";
+import ViewTimelineIcon from "@mui/icons-material/ViewTimeline";
+import CreateIcon from "@mui/icons-material/Create";
 
 export default function SpeedDial() {
   const { navigateTo } = React.useContext(AppContext);
   const navigate = (r) => navigateTo(r, false);
   const actions = [
     {
-      icon: <EditIcon />,
-      name: "Card",
-      onClick: () => navigate("/create-trip/card"),
+      icon: <ViewTimelineIcon />,
+      name: "View Trips",
+      onClick: () => navigate("/my-trips"),
     },
     {
-      icon: <FormatAlignLeftIcon />,
-      name: "Form",
-      onClick: () => navigate("/create-trip/form"),
+      icon: <CreateIcon />,
+      name: "Create Trip",
+      onClick: () => navigate("/create-trip"),
     },
   ];
   return (
     <Box sx={{ flexGrow: 1 }}>
       <SpeedDl
-        ariaLabel="SpeedDial basic example"
+        ariaLabel="SpeedDial"
         sx={{
           position: "absolute",
           bottom: {
-            xs: 42,
+            xs: 65,
             sm: 55,
           },
           right: {
