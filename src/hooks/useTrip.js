@@ -38,22 +38,30 @@ export default function useTrip() {
     return match ? parseInt(match[1], 10) : null;
   };
 
+  const [isTripLoading, setIsTripLoading] = React.useState(true);
+
   const tripDetails = useLiveQuery(async () => {
+    setIsTripLoading(true); // Set loading on query start
+
+    let result = null;
+
     if (pathname.endsWith("last-created")) {
-      return await db.trips.orderBy("created_at").last();
+      result = await db.trips.orderBy("created_at").last();
+    } else if (tripSlug) {
+      const tripId = extractTripId(tripSlug);
+      if (!isNaN(tripId)) {
+        result = await db.trips.get(tripId);
+      }
     }
 
-    if (!tripSlug) return null;
-
-    const tripId = extractTripId(tripSlug);
-    return !isNaN(tripId) ? await db.trips.get(tripId) : null;
+    setIsTripLoading(false); // Set loading false after query finishes
+    return result;
   }, [pathname, tripSlug]);
 
-  // In your component logic (outside the hook)
+  // component logic (outside the hook)
   React.useEffect(() => {
-    if (tripDetails === undefined) {
-      return;
-    }
+    if (isTripLoading) return; // Wait until query finishes
+
     if (!tripDetails) {
       setTripStatus((prev) => ({
         ...prev,
@@ -65,14 +73,14 @@ export default function useTrip() {
           isLoading: false,
         },
       }));
-    } else if (tripDetails) {
+    } else {
       setTripStatus((prev) => ({
         ...prev,
         details: { error: null, isLoading: false },
         response: { isLoading: false },
       }));
     }
-  }, [tripDetails, pathname]);
+  }, [tripDetails, isTripLoading, pathname]);
 
   React.useEffect(() => {
     if (!tripDetails) return;

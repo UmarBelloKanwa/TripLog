@@ -26,9 +26,6 @@ db.on("populate", populate);
 
 export function resetDatabase(): Promise<void> {
   return db.transaction("rw", db.trips, db.pinedTrips, async () => {
-    console.log("Clearing all tables...");
     await Promise.all(db.tables.map((table) => table.clear()));
   });
 }
-
-//resetDatabase();
