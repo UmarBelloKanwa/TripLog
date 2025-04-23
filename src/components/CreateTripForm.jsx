@@ -12,6 +12,7 @@ import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import useCreateTripForm from "../hooks/useCreateTripForm";
 import CircularProgress from "@mui/material/CircularProgress";
 import LocationInput from "./LocationInput";
+import Alert from "@mui/material/Alert";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -42,13 +43,22 @@ export default function CreateTripForm({ data, nextStep }) {
     disabled,
     currentLocationPlaceholder,
     pickupLocationPlaceholder,
-    dropoffLocationPlaceholder
+    dropoffLocationPlaceholder,
   } = useCreateTripForm(data);
 
-  
+  const [locationError, setLocationError] = React.useState(null);
 
   return (
     <Card>
+      {!!locationError && (
+        <Alert
+          severity="error"
+          elevation={0}
+          sx={{ borderRadius: 3, textAlign: "left" }}
+        >
+          {locationError}
+        </Alert>
+      )}
       <Box
         component="form"
         noValidate
@@ -65,6 +75,7 @@ export default function CreateTripForm({ data, nextStep }) {
         }}
       >
         <LocationInput
+          setLocationError={setLocationError}
           value={formData["current_location"]}
           error={!!helperTexts["current_location"]}
           helperText={helperTexts["current_location"]}
@@ -84,6 +95,7 @@ export default function CreateTripForm({ data, nextStep }) {
         />
 
         <LocationInput
+          setLocationError={setLocationError}
           value={formData["pickup_location"]}
           error={!!helperTexts["pickup_location"]}
           helperText={helperTexts["pickup_location"]}
@@ -103,6 +115,7 @@ export default function CreateTripForm({ data, nextStep }) {
         />
 
         <LocationInput
+          setLocationError={setLocationError}
           value={formData["dropoff_location"]}
           error={!!helperTexts["dropoff_location"]}
           helperText={helperTexts["dropoff_location"]}
@@ -152,6 +165,7 @@ export default function CreateTripForm({ data, nextStep }) {
             margin: "auto",
             borderRadius: 2,
           }}
+          className={!(disabled || loading) ? "Bty-button" : ""}
           endIcon={
             loading ? <CircularProgress size={20} color="inherit" /> : null
           }

@@ -73,9 +73,6 @@ export default function useCreateTripForm(data) {
         if (value.length < 3) {
           return "Location must be at least 3 characters long.";
         }
-        if (!/^[a-zA-Z\s.,'-]+$/.test(value)) {
-          return "Location must contain only letters, spaces, and common punctuation.";
-        }
         break;
       case "hours":
         if (isNaN(value) || value <= 0) {

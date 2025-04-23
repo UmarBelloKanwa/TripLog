@@ -4,7 +4,7 @@ import TextField from "./TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../services";
 
-const LocationInput = ({ onChange, ...props }) => {
+const LocationInput = ({ setLocationError, onChange, ...props }) => {
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [userCountry, setUserCountry] = React.useState("");
@@ -36,9 +36,19 @@ const LocationInput = ({ onChange, ...props }) => {
   }, []);
 
   const handleInputChange = async (event, value) => {
+  
+    if (value === undefined || !value) {
+      setLocationError("");
+      return;
+    }
     setLoading(true);
     try {
       const globalResults = await api.fetchLocations(value);
+      if (!globalResults.length > 0) {
+        setLocationError(`An error occured, could not fetch locations`);
+      } else {
+        setLocationError("");
+      }
 
       // Prioritize results containing the user's country name
       const prioritizedResults = userCountry
@@ -55,12 +65,13 @@ const LocationInput = ({ onChange, ...props }) => {
       // Ensure unique keys by appending coordinates to the label
       const uniqueResults = prioritizedResults.map((result, index) => ({
         ...result,
-        key: `${result.label}-${result.lat}-${result.lon}-${index}`,
+        key: `${result.label}-${result.lat}-${result.lon}-${index}${Math.random()}`,
       }));
 
       setOptions(uniqueResults);
-    } catch /*(error)*/ {
+    } catch (error) {
       //console.error("Error fetching location options:", error);
+      setLocationError(`An error occured, could not fetch locations ${error}`);
     } finally {
       setLoading(false);
     }
@@ -72,6 +83,7 @@ const LocationInput = ({ onChange, ...props }) => {
       selectOnFocus
       clearOnBlur
       handleHomeEndKeys
+      value={props.value}
       options={options}
       loading={loading}
       onInputChange={handleInputChange}

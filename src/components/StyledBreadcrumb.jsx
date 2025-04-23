@@ -5,7 +5,6 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
   return {
     backgroundColor: theme.palette.grey[100],
     height: theme.spacing(3),
-    color: "white",
     fontWeight: theme.typography.fontWeightRegular,
     "&:hover, &:focus": {
       backgroundColor: emphasize(theme.palette.grey[100], 0.06),
@@ -15,14 +14,13 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => {
     },
     "&:active": {
       boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(theme.palette.grey[100], 0.12),
-      ...theme.applyStyles("dark", {
-        backgroundColor: emphasize(theme.palette.grey[800], 0.12),
-      }),
+      background:
+        "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+      color: "white",
     },
-    ...theme.applyStyles("dark", {
-      backgroundColor: theme.palette.grey[800],
-    }),
+    background:
+      "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+    color: "white",
   };
 });
 

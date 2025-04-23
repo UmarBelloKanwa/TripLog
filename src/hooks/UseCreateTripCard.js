@@ -1,5 +1,7 @@
 import * as React from "react";
 import api from "../services";
+import { db } from "../models/db";
+
 import { useNavigate } from "react-router-dom";
 
 export default function useCreateTripCard(data) {
@@ -12,13 +14,10 @@ export default function useCreateTripCard(data) {
   ];
 
   const navigate = useNavigate();
-
   const [formData, setFormData] = React.useState(data);
-
   const [helperTexts, setHelperTexts] = React.useState({});
-
   const [activeStep, setActiveStep] = React.useState(0);
-
+  const [loading, setLoading] = React.useState(false);
   const [errorFeedback, setErrorFeedback] = React.useState(null);
 
   const validateInput = (name, value) => {
@@ -33,9 +32,6 @@ export default function useCreateTripCard(data) {
       case "trip_name":
         if (value.length < 3) {
           return `${n} must be at least 3 characters long.`;
-        }
-        if (!/^[a-zA-Z\s.,'-]+$/.test(value)) {
-          return `${n} must contain only letters, spaces, and common punctuation.`;
         }
         break;
       case "hours":
@@ -54,11 +50,10 @@ export default function useCreateTripCard(data) {
   };
 
   const [completed, setCompleted] = React.useState(() => {
-    // Initialize completed state based on the validity of the provided data
     return Object.keys(formData).reduce((acc, key, index) => {
-      const isValid = !validateInput(key, data[key]); // Check if the input is valid
+      const isValid = !validateInput(key, data[key]);
       if (isValid) {
-        acc[index] = true; // Mark step as completed if valid
+        acc[index] = true;
       }
       return acc;
     }, {});
@@ -100,14 +95,12 @@ export default function useCreateTripCard(data) {
 
   const handleSetFormData = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
 
     const validationMessage = validateInput(name, value);
-
     setHelperTexts((prev) => ({
       ...prev,
       [name]: validationMessage,
@@ -126,49 +119,54 @@ export default function useCreateTripCard(data) {
     const newHelperTexts = {};
     const newCompleted = {};
     let isValid = true;
-
     const keys = Object.keys(formData);
 
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       const validationMessage = validateInput(key, formData[key]);
-
       newHelperTexts[key] = validationMessage;
-
       if (!validationMessage) {
         newCompleted[i] = true;
       } else {
         isValid = false;
-
         if (key !== "trip_name") {
           navigate("/create-trip/form"); // Only runs once
         }
-
-        break; // ✅ stop checking further inputs after the first invalid one
+        break;
       }
     }
 
-    setHelperTexts(newHelperTexts); // Update helper texts
-    setCompleted(newCompleted); // Update completed steps
-    return isValid; // Return overall validity
+    setHelperTexts(newHelperTexts);
+    setCompleted(newCompleted);
+    return isValid;
   }, [formData, navigate]);
 
   React.useEffect(() => {
     areInputsValid(); // Revalidate inputs whenever formData changes
   }, [formData, areInputsValid]);
 
-  const [loading, setLoading] = React.useState(false); // Add loading state
-
   const submitData = async () => {
-    const isValid = areInputsValid(); // Ensure helperTexts is updated
-    if (!isValid) {
-      // If inputs are invalid, helperTexts will already be updated
+    if (!areInputsValid()) {
       return;
     }
 
     setLoading(true);
-    // Clear helperTexts and mark all steps as completed
     setHelperTexts({});
+
+    const existedName = await db.trips
+      .where("trip_name")
+      .equalsIgnoreCase(formData.trip_name)
+      .first();
+
+    if (existedName) {
+      setHelperTexts((pr) => ({
+        ...pr,
+        trip_name: "Trip name is already existed, use another name",
+      }));
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
     setCompleted(
       Object.keys(formData).reduce((acc, key, index) => {
         acc[index] = true;
@@ -178,13 +176,19 @@ export default function useCreateTripCard(data) {
 
     try {
       const response = await api.createTrip(formData);
-      console.log("response:", response);
       const data = await response.json();
-      console.log("response data", data);
 
+      console.log("response data", data);
       if (response.ok) {
-        api.storeTrip(data);
-        navigate("/my-trips/last-created");
+        try {
+          const id = db.trips.add({
+            ...formData,
+            created_at: new Date().toISOString(),
+          });
+          if (id) navigate("/my-trips/last-created");
+        } catch (err) {
+          setErrorFeedback(`Failed to store ${formData.trip_name} : ${err}`);
+        }
       } else {
         setErrorFeedback(`An unexpected error occured, ${data?.message}`);
       }
@@ -192,8 +196,9 @@ export default function useCreateTripCard(data) {
       setErrorFeedback(
         `An unexpected error occured, Failed to Fetch, Please try again!!!`
       );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleCloseErrorFeedback = () => {

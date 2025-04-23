@@ -74,12 +74,18 @@ const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          background:
-            "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
-          color: "white",
+          // background:
+          // "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+          // color: "white",
           "&:hover": {
             background:
               "linear-gradient(45deg,rgb(66, 57, 226) 30%,rgb(11, 60, 61) 90%)", // Lighter green gradient on hover
+            color: "white",
+          },
+          "&.Mui-active": {
+            background:
+              "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+            color: "white",
           },
         },
       },
@@ -88,15 +94,14 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          background:
-            "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
-          border: 0,
-          borderRadius: "14px",
-          boxShadow: "0 3px 5px 2px rgba(80, 141, 78, 0.3)", // Green shadow effect
-          color: "white",
-          height: 48,
-          padding: "0 30px",
-          "&:hover": {
+          "&.Bty-button": {
+            background:
+              "linear-gradient(45deg,rgb(54, 82, 169) 30%,rgb(45, 11, 112) 90%)", // Gradient from soft green to deep green
+
+            boxShadow: "0 3px 5px 2px rgba(80, 141, 78, 0.3)",
+            color: "white",
+          },
+          "&.Bty-button:hover": {
             background:
               "linear-gradient(45deg,rgb(66, 57, 226) 30%,rgb(11, 60, 61) 90%)", // Lighter green gradient on hover
           },

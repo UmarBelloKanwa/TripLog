@@ -66,3 +66,44 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Marker base (pin shape) */
+.marker-pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  background: #c30b82;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -15px 0 0 -15px;
+}
+
+/* White inner circle */
+.marker-pin::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* SVG wrapper */
+.custom-div-icon {
+  position: relative;
+  width: 30px;
+  height: 42px;
+}
+.icon-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -12,7 +13,6 @@ import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
-import ShareIcon from "@mui/icons-material/Share";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
@@ -29,6 +29,7 @@ import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -134,6 +135,7 @@ export default function CreateTripCard({ data }) {
   // Disable button if no steps are completed, any helper text exists, or loading is true
 
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -172,11 +174,14 @@ export default function CreateTripCard({ data }) {
                   </Avatar>
                 }
                 action={
-                  <IconButton aria-label="share">
-                    <ShareIcon />
+                  <IconButton
+                    aria-label="share"
+                    onClick={() => navigate("/create-trip/form")}
+                  >
+                    <CancelIcon />
                   </IconButton>
                 }
-                title="Truck Driver"
+                title="Mr. Driver"
                 subheader={currentDate}
               />
               <CardMedia
@@ -188,6 +193,8 @@ export default function CreateTripCard({ data }) {
                     xs: 200,
                     sm: 300,
                   },
+                  width: "98.3%",
+                  m: "auto",
                   borderRadius: 9,
                 }}
               />
@@ -251,7 +258,7 @@ export default function CreateTripCard({ data }) {
                   helperText={isMobile ? helperTexts["trip_name"] : null}
                 />
 
-                <Typography variant="body1" sx={{ textAlign: "justify" }}>
+                <Typography variant="body2" sx={{ textAlign: "justify" }}>
                   Currently, I am at{" "}
                   <span style={{ fontWeight: "bold" }}>
                     {formData["current_location"]}
@@ -264,7 +271,7 @@ export default function CreateTripCard({ data }) {
                   <span style={{ fontWeight: "bold" }}>
                     {formData["dropoff_location"]}.{" "}
                   </span>
-                  The journey is expected to take approximately{" "}
+                  The current cycle used (hours) is{" "}
                   <span style={{ fontWeight: "bold" }}>
                     {formData["hours"]}{" "}
                   </span>
@@ -274,9 +281,8 @@ export default function CreateTripCard({ data }) {
               </CardContent>
               <CardActions>
                 <Button
-                  size="small"
-                  color="primary"
                   onClick={async () => await submitData()}
+                  className={!isButtonDisabled ? "Bty-button" : ""}
                   disabled={isButtonDisabled} // Disable button conditionally
                   endIcon={
                     loading ? (
@@ -294,14 +300,14 @@ export default function CreateTripCard({ data }) {
             open={!!errorFeedback}
             //autoHideDuration={6000}
             onClose={handleCloseErrorFeedback}
-            sx={{ width: { xs: "55%", sm: "40%" } }}
+            sx={{ width: { xs: "85%", sm: "40%" } }}
           >
             <Alert
               onClose={handleCloseErrorFeedback}
               severity="error"
               variant="standard"
+              elevation={2}
             >
-              <AlertTitle> Error Creating Trip </AlertTitle>
               {errorFeedback}
             </Alert>
           </Snackbar>

@@ -24,8 +24,6 @@ export default function AppLayout() {
     setMode(data.settings.isDarkMode ? "dark" : "light");
   }, [data.settings.isDarkMode, setMode]);
 
-  console.log("route", route, "path", pathname);
-
   return (
     <Paper
       sx={(theme) => ({
@@ -64,7 +62,7 @@ export default function AppLayout() {
     >
       <Container>
         <div role="presentation">
-          <Breadcrumbs aria-label="breadcrumb">
+          <Breadcrumbs aria-label="breadcrumb" separator="›">
             <Link to="/">
               <StyledBreadcrumb
                 key="home"

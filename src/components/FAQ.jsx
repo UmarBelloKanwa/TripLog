@@ -9,6 +9,7 @@ import MuiAccordionSummary, {
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
+import AddIcon from "@mui/icons-material/Add";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -89,7 +90,11 @@ export default function FAQ(props) {
           expanded={expanded === "panel1"}
           onChange={handleChange("panel1")}
         >
-          <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+          <AccordionSummary
+            aria-controls="panel1d-content"
+            id="panel1d-header"
+            indicator={<AddIcon />}
+          >
             <Typography component="span" fontSize="14px">
               How do I create a trip?
             </Typography>
@@ -107,7 +112,11 @@ export default function FAQ(props) {
           expanded={expanded === "panel2"}
           onChange={handleChange("panel2")}
         >
-          <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+          <AccordionSummary
+            aria-controls="panel2d-content"
+            id="panel2d-header"
+            indicator={<AddIcon />}
+          >
             <Typography component="span" fontSize="14px">
               How does the app track my journey?
             </Typography>
@@ -124,7 +133,11 @@ export default function FAQ(props) {
           expanded={expanded === "panel3"}
           onChange={handleChange("panel3")}
         >
-          <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+          <AccordionSummary
+            aria-controls="panel3d-content"
+            id="panel3d-header"
+            indicator={<AddIcon />}
+          >
             <Typography component="span" fontSize="14px">
               How do I save and review my logs?
             </Typography>

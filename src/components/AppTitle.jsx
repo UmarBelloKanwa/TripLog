@@ -12,7 +12,7 @@ export default function AppTitle({ isLink = true }) {
       alignItems="center"
       spacing={0}
       onClick={() => {
-        if (isLink) navigateTo("/", false);
+        if (isLink) navigateTo("/");
       }}
     >
       <Box
@@ -53,7 +53,6 @@ export default function AppTitle({ isLink = true }) {
     </Stack>
   );
 }
-
 
 export const Title = ({ value, Icon, onClick }) => {
   let TheIcon = Icon;

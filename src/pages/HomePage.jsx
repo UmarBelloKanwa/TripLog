@@ -11,13 +11,9 @@ import MuiAccordionSummary, {
 } from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
-import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import AppTitle from "../components/AppTitle";
+import NormalStepper from "../components/NormalStepper";
 
 const steps = [
   {
@@ -94,21 +90,6 @@ export default function Home() {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const [activeStep, setActiveStep] = React.useState(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    navigateTo("/create-trip", false);
-  };
-
   return (
     <Box
       sx={{
@@ -120,7 +101,6 @@ export default function Home() {
         margin: "0 auto",
       }}
     >
-      {" "}
       <Box
         sx={{
           width: "fit-content",
@@ -166,57 +146,19 @@ export default function Home() {
         fuel points, and auto-filling your{" "}
         <strong>Electronic Logging Device (ELD) logs</strong> for compliance.
       </Typography>
-      <Box sx={{ mt: 3 }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {steps.map((step, index) => (
-            <Step key={step.label}>
-              <StepLabel
-                optional={
-                  index === steps.length - 1 ? (
-                    <Typography variant="caption">Last step</Typography>
-                  ) : null
-                }
-              >
-                {step.label}
-              </StepLabel>
-              <StepContent TransitionProps={{ unmountOnExit: false }}>
-                <Typography>{step.description}</Typography>
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    {index === steps.length - 1 ? "Finish" : "Continue"}
-                  </Button>
-                  {index !== 0 && (
-                    <Button
-                      disabled={index === 0}
-                      onClick={handleBack}
-                      sx={{ mt: 1, mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                  )}
-                </Box>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-        {activeStep === steps.length && (
-          <Box sx={{ p: 1 }}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
 
-            <Button
-              variant="contained"
-              onClick={handleReset}
-              sx={{ mt: 1, mr: 1 }}
-            >
-              Get started your trip
-            </Button>
-          </Box>
-        )}
-      </Box>
+      <NormalStepper
+        steps={steps}
+        title="step"
+        completedText="All steps completed - you're finished"
+        nextAction={{
+          text: "Get started your trip",
+          onClick: () => {
+            navigateTo("/create-trip", false);
+          },
+        }}
+      />
+
       <Divider sx={{ mt: 1, mb: 1 }}>
         <Chip
           label="What we offered ?"

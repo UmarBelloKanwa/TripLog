@@ -6,11 +6,11 @@ import { useNavigate, Routes, Route } from "react-router-dom";
 
 const CreateTrip = () => {
   const [tripData, setTripData] = React.useState({
-    current_location: "Berlin, Germany",
-    pickup_location: "Hamburg, Germany",
-    dropoff_location: "Munich, BY, Germany",
-    hours: "15", // Current Cycle Used (Hrs)
-    trip_name: "Pre Journey",
+    current_location: "", // New York, NY, USA
+    pickup_location: "", // Chicago, IL, USA
+    dropoff_location: "", // Dallas, TX, USA
+    hours: "", // Current driving time spent before the trip (can be used to calculate required rest or breaks
+    trip_name: "", // Demo Trip
   });
 
   const navigate = useNavigate();
