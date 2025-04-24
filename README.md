@@ -71,12 +71,12 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
 
 ## Folder Structure
 
-- `src/components`: Reusable React components.
-- `src/pages`: Page-level components.
-- `src/layouts`: Layout components for the application.
-- `src/hooks`: Custom React hooks.
-- `src/models`: Database models and utilities.
-- `src/services`: API and utility services.
+- `frontend/src/components`: Reusable React components.
+- `frontend/src/pages`: Page-level components.
+- `frontend/src/layouts`: Layout components for the application.
+- `frontend/src/hooks`: Custom React hooks.
+- `frontend/src/models`: Database models and utilities.
+- `frontend/src/services`: API and utility services.
 
 ## Backend and API Folder Structure
 
@@ -89,7 +89,7 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
   - `views.py`: Views for handling HTTP requests.
   - `wsgi.py`: WSGI configuration for the Django project.
 
-- `api/`
+- `backend/api/`
   - `__init__.py`: Initialization file for the API module.
   - `admin.py`: Admin interface configuration.
   - `apps.py`: Application configuration.
