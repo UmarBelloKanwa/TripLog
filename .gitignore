@@ -25,7 +25,6 @@ dist-ssr
 
 # Ignore React's node_modules
 /frontend/node_modules/
-/frontend/.env
 # Ignore Django's __pycache__
 **/__pycache__/
 
@@ -38,3 +37,4 @@ dist-ssr
 # Ignore virtualenvs
 /backend/venv/
 /backend/.env
+/frontend/.env
