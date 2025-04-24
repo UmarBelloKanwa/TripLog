@@ -166,7 +166,9 @@ export default function useCreateTripCard(data) {
       setLoading(false);
       return;
     }
-    setLoading(false);
+
+    setLoading(true);
+    setHelperTexts({});
     setCompleted(
       Object.keys(formData).reduce((acc, key, index) => {
         acc[index] = true;
