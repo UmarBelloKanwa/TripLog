@@ -1,5 +1,3 @@
-const BASE_URL = "http://127.0.0.1:8000/api";
-const url = (path) => `${BASE_URL}${path}`;
 const apiKey = import.meta.env.VITE_OPENROUTESERVICE_API_KEY;
 
 const api = {
@@ -49,7 +47,7 @@ const api = {
   createTrip: async (data) => {
     data.hours = parseInt(data.hours, 10);
     try {
-      const response = await fetch(url("/create-trip/"), {
+      const response = await fetch("/api/create-trip/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
