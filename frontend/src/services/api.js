@@ -1,5 +1,7 @@
 const apiKey = import.meta.env.VITE_OPENROUTESERVICE_API_KEY;
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const api = {
   fetchLocations: async (query = "") => {
     if (!query.length) {
@@ -47,7 +49,7 @@ const api = {
   createTrip: async (data) => {
     data.hours = parseInt(data.hours, 10);
     try {
-      const response = await fetch("/api/create-trip/", {
+      const response = await fetch(`${API_URL}/create-trip/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
