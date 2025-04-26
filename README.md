@@ -15,23 +15,31 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/UmarBelloKanwa/TripLog.git
    cd triplog/frontend
    ```
+   ### 🔧 Environment Variables
 
-2. Install dependencies:
+2. create a `.env` file inside the `frontend` directory with the following content:
+
+```env
+VITE_OPENROUTESERVICE_API_KEY=your_openrouteservice_api_key_here   # API key for OpenRouteService (used for maps and routing)
+VITE_API_URL=http://127.0.0.1:8000/api                              # local backend API URL
+```
+
+3. Install dependencies:
 
    ```bash
    npm install
    ```
 
-3. Start the development server:
+4. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`.
+5. Open your browser and navigate to `http://localhost:3000`.
 
 ## Running the Backend Locally
 
@@ -48,19 +56,25 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
    source venv/bin/activate   # On Windows: venv\Scripts\activate
    ```
 
-3. Install the required dependencies:
+3. create a `.env` file inside the `backend` directory with the following content:
+
+```env
+OPENROUTESERVICE_API_KEY=your_openrouteservice_api_key_here   # API key for OpenRouteService (used for maps and routing)
+```
+
+4. Install the required dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Start the development server:
+5. Start the development server:
 
    ```bash
    python manage.py runserver
    ```
 
-5. Open your browser and navigate to `http://127.0.0.1:8000` to access the backend.
+6. Open your browser and navigate to `http://127.0.0.1:8000` to access the backend.
 
 ## Technologies Used
 
@@ -75,7 +89,7 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
 - `frontend/src/pages`: Page-level components.
 - `frontend/src/layouts`: Layout components for the application.
 - `frontend/src/hooks`: Custom React hooks.
-- `frontend/src/models`: Database models and utilities.
+- `frontend/src/models`: Database models and utilitie.
 - `frontend/src/services`: API and utility services.
 
 ## Backend and API Folder Structure
