@@ -16,7 +16,7 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
 
    ```bash
    git clone <repository-url>
-   cd Triplog
+   cd triplog/frontend
    ```
 
 2. Install dependencies:
@@ -38,7 +38,7 @@ Triplog is a comprehensive trip tracking and logging solution designed for profe
 1. Navigate to the backend directory:
 
    ```bash
-   cd backend
+   cd triplog/backend
    ```
 
 2. Create a virtual environment:
