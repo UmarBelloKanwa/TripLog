@@ -26,11 +26,10 @@ export default function SidebarFooter({ mini }) {
         <CardContent sx={{ height: "100%" }}>
         <Typography variant="body2" color="text.secondary">
   {mini ? "© TripLog" : `© ${new Date().getFullYear()} Powered by `}
-  <span style={{ verticalAlign: 'baseline',  display: 'inline-flex', alignItems: 'baseline'  }}>
+</Typography>
+ <span style={{ verticalAlign: 'baseline',  display: 'inline-flex', alignItems: 'baseline'  }}>
     <AppTitle />
   </span>
-</Typography>
-
         </CardContent>
       </CardActionArea>
     </Card>
