@@ -26,7 +26,7 @@ export default function SidebarFooter({ mini }) {
           <Typography variant="body2" color="text.secondary">
             {mini
               ? "© TripLog"
-              : `© ${new Date().getFullYear()} Powered by Spotter.ai`}
+              : `© ${new Date().getFullYear()} Powered by Triplog`}
           </Typography>
         </CardContent>
       </CardActionArea>
