@@ -3,7 +3,6 @@ import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
-import AppTitle from "./AppTitle";
 
 export default function SidebarFooter({ mini }) {
   const [selectedCard, setSelectedCard] = React.useState(false);
@@ -27,9 +26,6 @@ export default function SidebarFooter({ mini }) {
         <Typography variant="body2" color="text.secondary">
   {mini ? "© TripLog" : `© ${new Date().getFullYear()} Powered by `}
 </Typography>
- <span style={{ verticalAlign: 'baseline',  display: 'inline-flex', alignItems: 'baseline'  }}>
-    <AppTitle />
-  </span>
         </CardContent>
       </CardActionArea>
     </Card>
