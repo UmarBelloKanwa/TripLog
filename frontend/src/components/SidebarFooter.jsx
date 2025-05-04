@@ -24,7 +24,7 @@ export default function SidebarFooter({ mini }) {
       >
         <CardContent sx={{ height: "100%" }}>
         <Typography variant="body2" color="text.secondary">
-  {mini ? "© TripLog" : `© ${new Date().getFullYear()} Powered by `}
+  {mini ? "© TripLog" : `© ${new Date().getFullYear()} Powered by Triplog`}
 </Typography>
         </CardContent>
       </CardActionArea>
