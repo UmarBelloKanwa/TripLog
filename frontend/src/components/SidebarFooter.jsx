@@ -24,12 +24,13 @@ export default function SidebarFooter({ mini }) {
         }}
       >
         <CardContent sx={{ height: "100%" }}>
-          <Typography variant="body2" color="text.secondary">
-            {mini
-              ? "© TripLog"
-              : `© ${new Date().getFullYear()} Powered by `}
-            <AppTitle />
-          </Typography>
+        <Typography variant="body2" color="text.secondary">
+  {mini ? "© TripLog" : `© ${new Date().getFullYear()} Powered by `}
+  <span style={{ verticalAlign: 'middle' }}>
+    <AppTitle />
+  </span>
+</Typography>
+
         </CardContent>
       </CardActionArea>
     </Card>
